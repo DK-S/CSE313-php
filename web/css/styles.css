@@ -1,0 +1,9 @@
+header{
+  display: grid;
+  grid-template-columns: auto 130px;
+  background-color: blue;
+}
+
+header div:last-child{
+  align-self: center;
+}
