@@ -9,12 +9,15 @@
 
   switch ($action){
     case 'home':
-      include 'view/home.php';
+      include 'view/assignments.php';
       break;
     case 'assignments':
       include 'view/assignments.php';
       break;
+    case 'about':
+      include 'view/about.php';
+      break;
     default:
-      include 'view/home.php';
+      include 'view/assignments.php';
   }
 ?>

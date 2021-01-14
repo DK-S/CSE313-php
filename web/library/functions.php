@@ -16,7 +16,7 @@ function getNavlist($selected=''){
   if($selected='About'){$navList .= ' class="Selected"';}
   $navList .= '><a href="/web/?action=about" title="About Link">About</a></li>';
   
-  $navList .= '</ul>'
+  $navList .= '</ul>';
   return $navList;
 }
 
