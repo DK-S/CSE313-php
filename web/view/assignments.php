@@ -13,7 +13,7 @@
     <nav>
       <?php echo $navList; ?>
     </nav>
-    <h1>Donivan Killpack</h1>
+    <h1>Assignments</h1>
     <footer>
       <?php include $_SERVER['DOCUMENT_ROOT'].'/common/footer.php';?>
     </footer>
