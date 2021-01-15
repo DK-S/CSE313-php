@@ -13,7 +13,7 @@
 
   switch ($action){
     case 'home':
-      include 'view/assignments.php';
+      include 'view/about.php';
       break;
     case 'assignments':
       include 'view/assignments.php';
