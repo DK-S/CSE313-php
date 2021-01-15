@@ -1,3 +1,5 @@
+body{margin: 0 auto 0 auto; width:80%;}
+
 header{
   display: grid;
   grid-template-columns: 75px auto;
@@ -27,4 +29,27 @@ footer{
 footer div{
   text-align: center;
   font-family: 'Acme', 'Arial', sans-serif;
+}
+
+
+
+article{display:grid; grid-gap:40px; grid-template-rows: 30px auto; margin-bottom: 30px;}
+article h2{margin:0;}
+article p{margin:0;}
+
+article{grid-template-columns: 1fr;}
+article img{grid-column: 1/1; width:250px;}
+article img{margin: 10px 0 30px; border: 1px solid #000; box-shadow: 0 0 30px #555; padding:0;}
+article img:hover{box-shadow: 10px 10px 40px; transform: scale(1.02);}
+
+@media screen and (min-width: 650px){
+  article:nth-child(odd){
+    grid-template-columns: 250px auto;
+  }
+  article:nth-child(odd) img{
+    grid-column: 1/2; transform: rotate(-20deg);
+  }
+  article:nth-child(even){grid-template-columns: auto 250px;}
+  article:nth-child(even) img{grid-column: 2/3; transform: rotate(20deg);}
+  article img{grid-row: 1/3; width: 100%; margin: 10px 0 30px; border: 1px solid #000; box-shadow: 0 0 30px #555; padding:0;}
 }
