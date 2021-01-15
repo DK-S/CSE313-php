@@ -3,12 +3,28 @@ header{
   grid-template-columns: 75px auto;
   grid-gap: 10px;
   background-color: blue;
+  color:white;
+  font-size: 200%;
+}
+header div{justify-self: center; align-self: center;}
+header img{width:75px; padding:0; margin:0;}
+
+nav{background-color: blue;}
+
+nav ul{list-style: none; padding-left:1em; display:grid; grid-template-columns:repeat(auto-fit, minmax(2em, 10em)); grid-gap:0; margin:0;}
+nav ul li{padding: 1em 0 1em 0; align-self: center; justify-self: center;}
+nav a{color:white; text-decoration:none; padding:1em;}
+
+nav ul li:hover{background-color: red; transform:scale(1.1);}
+
+nav ul li.selected {background-color:grey; transform:scale(1.1); color:red;}
+
+footer{
+  border-top:solid 4px;
+  padding: 3px;
 }
 
-header div:last-child{
-  align-self: center;
-}
-
-header img{
-  width:75px; padding: 0; margin: 0;
+footer div{
+  text-align: center;
+  font-family: 'Acme', 'Arial', sans-serif;
 }
