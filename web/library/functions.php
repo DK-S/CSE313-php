@@ -5,15 +5,15 @@ function getNavlist($selected=''){
   $navList = '<ul>';
   
   $navList .= '<li';
-  if($selected='Home'){$navList .= ' class="Selected"';}
+  if($selected=='Home'){$navList .= ' class="Selected"';}
   $navList .= '><a href="/web/" title="Home Link">Home</a></li>';
   
   $navList .= '<li';
-  if($selected='Assignments'){$navList .= ' class="Selected"';}
+  if($selected=='Assignments'){$navList .= ' class="Selected"';}
   $navList .= '><a href="/web/?action=assignments" title="Assignments Link">Assignments</a></li>';
   
   $navList .= '<li';
-  if($selected='About'){$navList .= ' class="Selected"';}
+  if($selected=='About'){$navList .= ' class="Selected"';}
   $navList .= '><a href="/web/?action=about" title="About Link">About</a></li>';
   
   $navList .= '</ul>';
