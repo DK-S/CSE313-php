@@ -10,7 +10,6 @@
     $action = filter_input(INPUT_GET, 'action');
   }
   $navList = getNavlist($action);
-  echo $action;
 
   switch ($action){
     case 'home':
