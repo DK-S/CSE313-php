@@ -22,6 +22,6 @@
       include 'view/about.php';
       break;
     default:
-      include 'view/assignments.php';
+      include 'view/about.php';
   }
 ?>
