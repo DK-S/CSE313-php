@@ -21,6 +21,12 @@
     case 'about':
       include 'view/about.php';
       break;
+    case 'w03-group';
+      include 'w03-group/index.php';
+      break;
+    case 'w03cart';
+      header("Location: /w03cart/");
+      break;
     default:
       include 'view/about.php';
   }
