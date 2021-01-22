@@ -19,8 +19,9 @@
         <li id="cart"><a href="/w03cart/?action=view_cart" title="View Cart Link">View Cart(<?php echo getCartSize($_SESSION["cart"]);?>)</a></li>
       </ul>
     </nav>
-    <section class="cart">
-      <?php echo $shoppingcart; ?>
+    <section class="confirm">
+      <?php echo "<p>Thank you for your purchase. Your order will be shipped to $address1 $address2 $city $state, $zip.</p>";?>
+      <?php echo getShoppingCart($items, $cart, false); ?>
     </section>
     <footer>
       <?php include $_SERVER['DOCUMENT_ROOT'].'/common/footer.php';?>

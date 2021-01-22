@@ -50,23 +50,31 @@ function getShoppingBrowser($items){
   return $browser;
 }
 
-function getShoppingCart($items, $cart){
-  $shoppingcart = '<div>Item</div>';
+function getShoppingCart($items, $cart, $control = null){
+  if ($control === null){$control = true;}
+  $shoppingcart = '<section class="shoppingcart';
+  if ($control){ $shoppingcart .= " control";}
+  $shoppingcart .= '">';
+  $shoppingcart .= '<div>Item</div>';
   $shoppingcart .= '<div>Image</div>';
   $shoppingcart .= '<div>Qty</div>';
   $shoppingcart .= '<div>Price</div>';
   $shoppingcart .= '<div>Subtotal</div>';
-  $shoppingcart .= '<div></div>';
+  $shoppingcart .= '<div';
+  if (!$control){$shoppingcart .= ' class="hide"';}
+  $shoppingcart .= '></div>';
   $total = 0;
   foreach($cart as $key=>$cartQty){
     $shoppingcart .= '<div>'.$key.'</div>';
-    $shoppingcart .= '<div><img src="/images/'.$items[$key]["img"].'" alt="Item Image"></div>';
-    $shoppingcart .= '<div>'.$cartQty.'</div>';
-    $shoppingcart .= '<div>$'.$items[$key]["price"].'</div>';
+    $shoppingcart .= '<div class="small"><img src="/images/'.$items[$key]["img"].'" alt="Item Image"></div>';
+    $shoppingcart .= '<div class="small">'.$cartQty.'</div>';
+    $shoppingcart .= '<div class="small">$'.$items[$key]["price"].'</div>';
     $subtotal = $cartQty * $items[$key]["price"];
     $total += $subtotal;
-    $shoppingcart .= '<div>$'.$subtotal.'</div>';
-    $shoppingcart .= '<div>';
+    $shoppingcart .= '<div class="small">$'.$subtotal.'</div>';
+    $shoppingcart .= '<div class="small';
+    if (!$control){$shoppingcart .= ' hide';}
+    $shoppingcart .= '">';
     $shoppingcart .= '<form action="/w03cart/" method="POST">';
     $shoppingcart .= '<input type="hidden" name="action" value="removefromcart">';
     $shoppingcart .= '<input type="hidden" name="item" value="'.$key.'">';
@@ -78,8 +86,15 @@ function getShoppingCart($items, $cart){
   $shoppingcart .= '<div></div>';
   $shoppingcart .= '<div></div>';
   $shoppingcart .= '<div></div>';
-  $shoppingcart .= '<div class="total">$'.$total.'</div>';
-  $shoppingcart .= '<div></div>';
+  $shoppingcart .= '<div class="total small">'.$total.'</div>';
+  $shoppingcart .= '<div class="small';
+    if (!$control){$shoppingcart .= ' hide';}
+  $shoppingcart .= '">';
+  $shoppingcart .= '<form action="/w03cart/" method="POST">';
+  $shoppingcart .= '<input type="hidden" name="action" value="getpayment">';
+  $shoppingcart .= '<input type="submit" value="Check Out"></form>';
+  $shoppingcart .= '</div>';
+  $shoppingcart .= '</section>';
   
   return $shoppingcart;
 }

@@ -20,7 +20,17 @@
           <li id="cart"><a href="/w03cart/?action=view_cart" title="View Cart Link">View Cart(<?php echo getCartSize($_SESSION["cart"]);?>)</a></li>
         </ul>
       </nav>
-      <?php echo $browser; ?>
+      <section class="main">
+        <?php echo $browser; ?>
+        <section class="sidebar">
+          
+          <label>Items in cart: <?php echo getCartSize($_SESSION["cart"]);?></label>
+          <form action="/w03cart/" method="POST">
+            <input type="hidden" name="action" value="checkout">
+            <input type="<?php if(getCartSize($_SESSION["cart"]) == 0){echo "hidden";} else {echo "submit";}?>" value="Check Out">
+          </form>
+        </section>
+      </section>
     <footer>
       <?php include $_SERVER['DOCUMENT_ROOT'].'/common/footer.php';?>
     </footer>
