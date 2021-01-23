@@ -13,15 +13,15 @@
 
   $items = array(
     "1" => array("price"=>45, "img"=>"logo_500.jpg"),
-    "2" => array("price"=>95, "img"=>"train_500.jpg"),
-    "3" => array("price"=>75, "img"=>"helicopters_500.jpg"),
-    "4" => array("price"=>75, "img"=>"Calm_500.jpg"),
-    "5" => array("price"=>75, "img"=>"Fear_500.jpg"),
-    "6" => array("price"=>75, "img"=>"laptop_500.jpg"),
-    "7" => array("price"=>75, "img"=>"plate_500.jpg"),
-    "8" => array("price"=>75, "img"=>"tech_500.jpg"),
-    "9" => array("price"=>75, "img"=>"street_500.jpg"),
-    "10" => array("price"=>75, "img"=>"sunset_500.jpg")
+    "2" => array("price"=>50, "img"=>"train_500.jpg"),
+    "3" => array("price"=>25, "img"=>"helicopters_500.jpg"),
+    "4" => array("price"=>95, "img"=>"Calm_500.jpg"),
+    "5" => array("price"=>45, "img"=>"Fear_500.jpg"),
+    "6" => array("price"=>35, "img"=>"laptop_500.jpg"),
+    "7" => array("price"=>45, "img"=>"plate_500.jpg"),
+    "8" => array("price"=>35, "img"=>"tech_500.jpg"),
+    "9" => array("price"=>25, "img"=>"street_500.jpg"),
+    "10" => array("price"=>95, "img"=>"sunset_500.jpg")
   );
 
 
