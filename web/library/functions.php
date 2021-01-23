@@ -88,7 +88,7 @@ function getShoppingCart($items, $cart, $control = null){
   $shoppingcart .= '<div></div>';
   $shoppingcart .= '<div class="total small">'.$total.'</div>';
   $shoppingcart .= '<div class="small';
-    if (!$control){$shoppingcart .= ' hide';}
+    if (!$control || getCartSize($cart)==0){$shoppingcart .= ' hide';}
   $shoppingcart .= '">';
   $shoppingcart .= '<form action="/w03cart/" method="POST">';
   $shoppingcart .= '<input type="hidden" name="action" value="getpayment">';
