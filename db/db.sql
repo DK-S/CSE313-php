@@ -22,13 +22,13 @@ Create the tables used for this project
 */
 
 Create table accountTypes (id serial not null primary key
-,name varchar(10)
+,name varchar(50)
 ,code INT
 ,active boolean
 );
 
 Create table accountFrequencies (id serial not null primary key
-,name varchar(10)
+,name varchar(50)
 ,code INT
 ,active boolean
 );
