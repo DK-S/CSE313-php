@@ -1,0 +1,12 @@
+git push github master
+git push heroku master
+
+heroku pg:psql
+
+npm run start
+
+sass ./scss/w03.scss ./css/w03.css
+sass --watch ./scss/w03.scss:./css/w03.css
+
+php -S localhost:8000
+

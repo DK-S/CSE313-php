@@ -99,4 +99,14 @@ function getShoppingCart($items, $cart, $control = null){
   return $shoppingcart;
 }
 
+function getUserTable(){
+  $rows = getUsers();
+  $tb = "<table>"
+  foreach ($rows as $user){
+    $tb .= "<tr><td>$user[firstName]</td><td>$user[lastName]</td><td>$user[username]</td></tr>";
+
+  }
+  $tb .= "</table>";
+}
+
 ?>

@@ -2,8 +2,11 @@
 
   session_start();
 
+  //get the connection library
+  require_once '/library/connections.php';
   //get the functions library
   require_once 'library/functions.php';
+  
 
   $action = filter_input(INPUT_POST, 'action');
   if ($action == NULL){
@@ -26,6 +29,9 @@
       break;
     case 'w03cart';
       header("Location: /w03cart/");
+      break;
+    case 'w05-reading';
+      header("Location: /w05-reading/");
       break;
     default:
       include 'view/about.php';

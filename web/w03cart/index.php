@@ -78,7 +78,7 @@
       
       break;
     default:
-    include $_SERVER['DOCUMENT_ROOT']."/view/w03cart.php";
+      include $_SERVER['DOCUMENT_ROOT']."/view/w03cart.php";
       break;
   }
   
