@@ -3,6 +3,8 @@
 
   require_once $_SERVER['DOCUMENT_ROOT'].'/library/functions.php';
   require_once $_SERVER['DOCUMENT_ROOT'].'/library/connections.php';
+
+  require_once $_SERVER['DOCUMENT_ROOT'].'/models/w05model.php';
   
   $action = filter_input(INPUT_POST, 'action');
   if ($action == NULL){
