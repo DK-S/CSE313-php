@@ -17,6 +17,7 @@
       include $_SERVER['DOCUMENT_ROOT']."/view/w05/w03view.php";
       break;
   }
+  echo 'broke';
 
 
   ?>
