@@ -14,7 +14,7 @@
   switch ($action){
 
     default:
-      include $_SERVER['DOCUMENT_ROOT']."/view/w05/w03view.php";
+      include $_SERVER['DOCUMENT_ROOT']."/view/w05/w05view.php";
       break;
   }
   echo 'broke';
