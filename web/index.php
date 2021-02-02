@@ -3,7 +3,7 @@
   session_start();
 
   //get the connection library
-  require_once '/library/connections.php';
+  //require_once '/library/connections.php';
   //get the functions library
   require_once 'library/functions.php';
   
