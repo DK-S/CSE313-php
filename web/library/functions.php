@@ -103,7 +103,7 @@ function getUserTable(){
   $rows = getUsers();
   $tb = "<table>";
   foreach ($rows as $user){
-    $tb .= "<tr><td>".$user["firstName"]."</td><td>".$user["lastName"]."</td><td>".$user["userName"]."</td></tr>";
+    $tb .= "<tr><td>$user[firstName]</td><td>$user[lastName]</td><td>$user[userName]</td></tr>";
 
   }
   $tb .= "</table>";
