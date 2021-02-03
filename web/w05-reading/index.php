@@ -10,6 +10,7 @@
   if ($action == NULL){
     $action = filter_input(INPUT_GET, 'action');
   }
+  $navList = getNavlist($action);
 
   switch ($action){
 
