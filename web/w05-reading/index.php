@@ -20,7 +20,5 @@ $getTheUsers = "<div>Help</div>";
       include $_SERVER['DOCUMENT_ROOT']."/view/w05/w05view.php";
       break;
   }
-  echo 'broke';
-
-
+  
   ?>
