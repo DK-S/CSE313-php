@@ -108,7 +108,7 @@ function getUserTable(){
 
 //  }
   $tb .= "</table>";
-  
+  return $tb;
 }
 
 ?>
