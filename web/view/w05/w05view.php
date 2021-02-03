@@ -14,7 +14,7 @@
       <?php echo $navList; ?>
     </nav>
     <section>
-      <?php echo $getUsers; ?>
+      <?php echo getUserTable(); ?>
     </section>
     <footer>
       <?php include $_SERVER['DOCUMENT_ROOT'].'/common/footer.php';?>
