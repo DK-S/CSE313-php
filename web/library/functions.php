@@ -102,7 +102,7 @@ function getShoppingCart($items, $cart, $control = null){
 function getUserTable(){
   $rows = getUsers();
   $tb = "<table>";
-  $tb .= "<tr><td>First Name]</td><td>Last Name]</td><td>username</td></tr>";
+  $tb .= "<tr><td>First Name</td><td>Last Name</td><td>username</td></tr>";
   foreach ($rows as $user){
     $tb .= "<tr><td>$user[firstname]</td><td>$user[lastname]</td><td>$user[username]</td></tr>";
 
