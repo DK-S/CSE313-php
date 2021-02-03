@@ -107,6 +107,8 @@ function getUserTable(){
 
   }
   $tb .= "</table>";
+  var_dump($rows); 
+  
   return $tb;
 }
 
