@@ -11,7 +11,8 @@
     $action = filter_input(INPUT_GET, 'action');
   }
   $navList = getNavlist($action);
-  $getUsers = getUserTable();
+  //$getTheUsers = getUserTable();
+$getTheUsers = "<div>Help</div>";
 
   switch ($action){
 
