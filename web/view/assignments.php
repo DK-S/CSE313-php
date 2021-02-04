@@ -18,6 +18,8 @@
       <ul>
         <li><a href="../?action=w03-group" title="Link To W03 Group Assignemt">Week 03 Group Assignment</a></li>
         <li><a href="../?action=w03cart" title="Link To W03 Shopping Cart Assignemt">Week 03 Shopping Cart Assignment</a></li>
+        <li><a href="../?action=w05-reading" title="Link To W05 Reading Assignemt">Week 05 Reading Assignment</a></li>
+        <li><a href="../?action=budget" title="Link To Budget Project">Budget Project</a></li>
       </ul>
     </section>
     <footer>
