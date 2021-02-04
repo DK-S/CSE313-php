@@ -1,0 +1,99 @@
+body{margin: 0 auto 0 auto; width:80%;}
+
+header{
+  display: grid;
+  grid-template-columns: 75px auto;
+  grid-gap: 10px;
+  background-color: blue;
+  color:white;
+  font-size: 200%;
+}
+header div{justify-self: center; align-self: center;}
+header img{width:75px; padding:0; margin:0;}
+
+nav{background-color: blue;}
+
+nav ul{list-style: none; padding-left:1em; display:grid; grid-template-columns:repeat(auto-fit, minmax(2em, 10em)); grid-gap:0; margin:0;}
+nav ul li{padding: 1em 0 1em 0; align-self: center; justify-self: center;}
+nav a{color:white; text-decoration:none; padding:1em;}
+
+nav ul li:hover{background-color: red; transform:scale(1.1);}
+
+nav ul li.selected {background-color:grey; transform:scale(1.1); color:red;}
+
+footer{
+  border-top:solid 4px;
+  padding: 3px;
+}
+
+footer div{
+  text-align: center;
+  font-family: 'Acme', 'Arial', sans-serif;
+}
+
+
+
+article{display:grid; grid-gap:40px; grid-template-rows: 30px auto; margin-bottom: 30px;}
+article h2{margin:0;}
+article p{margin:0;}
+
+article{grid-template-columns: 1fr;}
+article img{grid-column: 1/1; width:250px;}
+article img{margin: 10px 0 30px; border: 1px solid #000; box-shadow: 0 0 30px #555; padding:0;}
+article img:hover{box-shadow: 10px 10px 40px; transform: scale(1.02);}
+
+  article:nth-child(odd) img{
+    grid-column: 1/2; transform: rotate(-20deg);
+  }
+  article:nth-child(even){grid-template-columns: auto 250px;}
+  article:nth-child(even) img{grid-column: 2/3; transform: rotate(20deg);}
+  article img{grid-row: 1/3; width: 100%; margin: 10px 0 30px; border: 1px solid #000; box-shadow: 0 0 30px #555; padding:0;}
+
+
+section.shopping{display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 100px)); grid-gap: 10px; }
+section.shopping figure{display: grid; grid-template-rows: 100px auto auto; width:100%; align-items: center; margin:0; padding: 0;}
+section.shopping figure img{width:100%;}
+section.shopping figure label{font-size: larger;}
+section.shopping figure input{border-radius: 10px; background-color: limegreen;}
+
+
+section.main{display: grid; grid-template-columns: 100%; grid-gap:20px;}
+
+input[type="submit"]{border: 1px solid; border-radius: 10px; background-color: limegreen; text-decoration: none; margin-top: 10px;}
+section.sidebar{padding-top: 40px;}
+section.shoppingcart div.total::before{content:'Total $';}
+section.shoppingcart input[type="submit"]{border: 1px solid; border-radius: 10px; background-color: red; text-decoration: none; margin-top: 10px;}
+section.shoppingcart>div:nth-last-of-type(1) input[type="submit"]{border: 1px solid; border-radius: 10px; background-color: limegreen; text-decoration: none; margin-top: 10px;}
+
+.getAddress{padding:5em;}
+section.getAddress form{display: grid; grid-template-columns: 80px 200px; grid-gap:5px;}
+.hide{display: none;}
+
+
+@media screen and (max-width: 650px){
+  
+  section.shoppingcart div img{width: 50%;}
+  section.shoppingcart>div:nth-child(6n+3)::after{content:' @ ';}
+  section.shoppingcart>div:nth-child(6n+4)::after{content:' = ';}
+  section.shoppingcart>div:nth-child(6n+3){display:inline;}
+  section.shoppingcart>div:nth-child(6n+4){display:inline;}
+  section.shoppingcart>div:nth-child(6n+5){display:inline;}
+  section.shoppingcart>div:nth-child(6n+6){display:inline;}
+  section.shoppingcart>div.total.small:nth-child(6n+5){display:block;}
+  section.shoppingcart>div.hide:nth-child(6n+6){display:none;}
+  section.shoppingcart>div:not(.small){display: none;}
+  section.shoppingcart>div>form{padding-bottom: 10px;}
+}
+
+@media screen and (min-width: 650px){
+  section.main{grid-template-columns: auto 200px; padding: 30px;}
+  article:nth-child(odd){
+    grid-template-columns: 250px auto;
+  }
+  .shoppingcart{display:grid; grid-template-columns: 50px 70px 50px 100px 100px; padding:50px;}
+  .shoppingcart.control{grid-template-columns: 50px 70px 50px 100px 100px 100px;}
+  .shoppingcart div{border:solid 1px; padding: 3px; text-align: center;}
+  .shoppingcart div img{width: 100%;}
+  .shoppingcart div input{width: 75%; padding: 3px;}
+}
+.hide{display: none;}

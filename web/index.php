@@ -24,14 +24,17 @@
     case 'about':
       include 'view/about.php';
       break;
-    case 'w03-group';
+    case 'w03-group':
       include 'w03-group/index.php';
       break;
-    case 'w03cart';
+    case 'w03cart':
       header("Location: /w03cart/");
       break;
     case 'w05-reading';
       header("Location: /w05-reading/");
+      break;
+    case 'budget':
+      header("Location: /budget/");
       break;
     default:
       include 'view/about.php';
