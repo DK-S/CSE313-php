@@ -49,6 +49,9 @@
       $searchFields = getSearch("categories", null, null);
       break;
     case 'manageusers':
+      $callPage = './views/admin.php';
+      $articleContent = getUserTable();
+      $searchFields = '';
       break;
     case 'filterTypes':
       //get the search varaibles and filter the request

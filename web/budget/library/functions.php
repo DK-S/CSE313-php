@@ -21,12 +21,12 @@ function getNavlist($selected=''){
 
 function getUserTable(){
   $rows = getUsers();
-  $tb = "<table>";
-  $tb .= "<tr><td>First Name</td><td>Last Name</td><td>username</td></tr>";
+  $tb = "<div class='table col_3'>";
+  $tb .= "<div>First Name</div><div>Last Name</div><div>username</div>";
   foreach ($rows as $user){
-    $tb .= "<tr><td>$user[firstname]</td><td>$user[lastname]</td><td>$user[username]</td></tr>";
+    $tb .= "<div>$user[firstname]</div><div>$user[lastname]</div><div>$user[username]</div>";
   }
-  $tb .= "</table>";
+  $tb .= "</div>";
   return $tb;
 }
 
