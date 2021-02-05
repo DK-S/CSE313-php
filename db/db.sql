@@ -87,8 +87,8 @@ future they can be changed or modified with ease
 */
 
 insert into accounttypes (name, code, active) values ('Income', 1, TRUE);
-insert into accounttypes (name, code, active) values ('Income', 2, TRUE);
-insert into accounttypes (name, code, active) values ('Income', 3, TRUE);
+insert into accounttypes (name, code, active) values ('Expenses', 2, TRUE);
+insert into accounttypes (name, code, active) values ('Savings', 3, TRUE);
 
 insert into accountfrequencies (name, code, active) values ('Fixed', 0, TRUE);
 insert into accountfrequencies (name, code, active) values ('Periodic', 1, TRUE);

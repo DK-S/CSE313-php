@@ -14,9 +14,18 @@
       <?php echo $navList; ?>
     </nav>
     <section>
-      <p>Add stuff here to sort through</p>
-      <p>Add the account types with search capabilities</p>
-      <?php dbConnect(); echo getUserTable();?>
+      <nav class="tabs">
+        <ul>
+          <li><a href="/budget/?action=managetypes" title="Link to manage account types">Types</a></li>
+          <li><a href="/budget/?action=managefrequencies" title="Link to manage account types">Frequencies</a></li>
+          <li><a href="/budget/?action=managecategories" title="Link to manage account types">Categories</a></li>
+          <li><a href="/budget/?action=manageusers" title="Link to manage account types">Users</a></li>
+        </ul>
+      </nav>
+      <article class="admin">
+        <?php echo $searchFields; ?>
+        <?php echo $articleContent; ?>
+      </article>
     </section>
     <footer>
       <?php include $_SERVER['DOCUMENT_ROOT'].'/budget/common/footer.php';?>

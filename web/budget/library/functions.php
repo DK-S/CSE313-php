@@ -30,4 +30,58 @@ function getUserTable(){
   return $tb;
 }
 
+function getSearch($table, $search='', $status=''){
+  $html = "<div class='search'><form action='/budget/' method='post'>";
+  $html .= "<label for='findName'>Find Name:</label>";
+  
+  $html .= "<input name='findName' type='text' ";
+  if(isset($search)){$html .=  "value='$search'";}
+  $html .= ">";
+  $html .= "<label for='findStatus'>Filter Status:</label>";
+  $html .= "<select name='findStatus'>";
+  if(isset($status)){if($status=='all'){$select=" selected";}else{$select="";}}else{$select="";}
+  $html .= "<option value='all' $select>All</option>";
+  if(isset($status)){if($status=='active'){$select=" selected";}else{$select="";}}else{$select="";}
+  $html .= "<option value='active' $select>Active</option>";
+  if(isset($status)){if($status=='inactive'){$select=" selected";}else{$select="";}}else{$select="";}
+  $html .= "<option value='inactive' $select>Inactive</option>";
+  $html .= "</select>";
+  switch($table){
+    case "types":
+      $html .= "<input type='hidden' name='action' value='filterTypes'>";
+      break;
+    case "frequencies":
+      break;
+    default:
+      break;
+  }
+  
+  $html .= "<input type='submit' value='Search'>";
+  $html .= "</form></div>";
+  return $html;
+}
+
+function getTypesTable($search='', $status=''){
+  $rows = getTypes($search, $status);
+  $tb = "<div class='table col_2'>";
+  $tb .= "<div>Type Name</div><div class='center'>Code</div><div class='center'>Active</div><div></div>";
+  foreach ($rows as $type){
+    $tb .= "<div>$type[name]</div><div class='center'>$type[code]</div><div class='center'>";
+    if ($type["active"]){
+      $tb .= "<img src='/budget/images/greencheck.jpg' alt='Green Checkmark'>";
+    }
+    //add checkbox here
+    $tb .= "</div><div>";
+    //add add/remove button here
+    if ($type["active"]){
+      $tb .= "<a href='/budget/?action=removetype' title='Link to remove type'>Remove</a>";
+    } else {
+      $tb .= "<a href='/budget/?action=restoretype' title='Link to restore type'>Restore</a>";
+    }
+    $tb .= "</div>";
+  }
+  $tb .= "</div>";
+  return $tb;
+}
+
 ?>

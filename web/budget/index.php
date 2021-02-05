@@ -31,6 +31,26 @@
       break;
     case 'saveuser':
       break;
+    case 'managetypes':
+      $callPage = './views/admin.php';
+      $articleContent = getTypesTable();
+      $searchFields = getSearch("types");
+      break;
+    case 'managefrequencies':
+      break;
+    case 'managecategories':
+      break;
+    case 'manageusers':
+      break;
+    case 'filterTypes':
+      //get the search varaibles and filter the request
+      $search = filter_input(INPUT_POST, 'findName', FILTER_SANITIZE_STRING);
+      $status = filter_input(INPUT_POST, 'findStatus', FILTER_SANITIZE_STRING);
+      //var_dump($status); die();
+      $articleContent = getTypesTable($search, $status);
+      $callPage = './views/admin.php';
+      $searchFields = getSearch("types", $search, $status);
+      break;
     default:
       $callPage =  'views/login.php';
       break;
