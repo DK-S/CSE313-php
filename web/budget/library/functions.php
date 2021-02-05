@@ -51,6 +51,10 @@ function getSearch($table, $search='', $status=''){
       $html .= "<input type='hidden' name='action' value='filterTypes'>";
       break;
     case "frequencies":
+      $html .= "<input type='hidden' name='action' value='filterFrequencies'>";
+      break;
+    case "categories":
+      $html .= "<input type='hidden' name='action' value='filterCategories'>";
       break;
     default:
       break;
@@ -59,6 +63,52 @@ function getSearch($table, $search='', $status=''){
   $html .= "<input type='submit' value='Search'>";
   $html .= "</form></div>";
   return $html;
+}
+
+function getFrequenciesTable($search='', $status=''){
+  $rows = getFrequencies($search, $status);
+  $tb = "<div class='table col_2'>";
+  $tb .= "<div>Type Name</div><div class='center'>Code</div><div class='center'>Active</div><div></div>";
+  foreach ($rows as $type){
+    $tb .= "<div>$type[name]</div><div class='center'>$type[code]</div><div class='center'>";
+    if ($type["active"]){
+      $tb .= "<img src='/budget/images/greencheck.jpg' alt='Green Checkmark'>";
+    }
+    //add checkbox here
+    $tb .= "</div><div>";
+    //add add/remove button here
+    if ($type["active"]){
+      $tb .= "<a href='/budget/?action=removefrequency&id=$type[id]' title='Link to remove frequency'>Remove</a>";
+    } else {
+      $tb .= "<a href='/budget/?action=restorefrequency&id=$type[id]' title='Link to restore frequency'>Restore</a>";
+    }
+    $tb .= "</div>";
+  }
+  $tb .= "</div>";
+  return $tb;
+}
+
+function getCategoriesTable($search='', $status=''){
+  $rows = getCategories($search, $status);
+  $tb = "<div class='table col_2'>";
+  $tb .= "<div>Type Name</div><div class='center'>Code</div><div class='center'>Active</div><div></div>";
+  foreach ($rows as $type){
+    $tb .= "<div>$type[name]</div><div class='center'>$type[code]</div><div class='center'>";
+    if ($type["active"]){
+      $tb .= "<img src='/budget/images/greencheck.jpg' alt='Green Checkmark'>";
+    }
+    //add checkbox here
+    $tb .= "</div><div>";
+    //add add/remove button here
+    if ($type["active"]){
+      $tb .= "<a href='/budget/?action=removecategory&id=$type[id]' title='Link to remove category'>Remove</a>";
+    } else {
+      $tb .= "<a href='/budget/?action=restorecategory&id=$type[id]' title='Link to restore category'>Restore</a>";
+    }
+    $tb .= "</div>";
+  }
+  $tb .= "</div>";
+  return $tb;
 }
 
 function getTypesTable($search='', $status=''){
@@ -74,14 +124,15 @@ function getTypesTable($search='', $status=''){
     $tb .= "</div><div>";
     //add add/remove button here
     if ($type["active"]){
-      $tb .= "<a href='/budget/?action=removetype' title='Link to remove type'>Remove</a>";
+      $tb .= "<a href='/budget/?action=removetype&id=$type[id]' title='Link to remove type'>Remove</a>";
     } else {
-      $tb .= "<a href='/budget/?action=restoretype' title='Link to restore type'>Restore</a>";
+      $tb .= "<a href='/budget/?action=restoretype&id=$type[id]' title='Link to restore type'>Restore</a>";
     }
     $tb .= "</div>";
   }
   $tb .= "</div>";
   return $tb;
 }
+
 
 ?>
