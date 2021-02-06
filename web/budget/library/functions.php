@@ -22,9 +22,21 @@ function getNavlist($selected=''){
 function getUserTable(){
   $rows = getUsers();
   $tb = "<div class='table col_3'>";
-  $tb .= "<div>First Name</div><div>Last Name</div><div>username</div>";
+  $tb .= "<div>First Name</div><div>Last Name</div><div>username</div><div>Active</div><div></div>";
   foreach ($rows as $user){
-    $tb .= "<div>$user[firstname]</div><div>$user[lastname]</div><div>$user[username]</div>";
+    $tb .= "<div>$user[firstname]</div><div>$user[lastname]</div><div>$user[username]</div><div>";
+    if ($user["active"]){
+      $tb .= "<img src='/budget/images/greencheck.jpg' alt='Green Checkmark'>";
+    }
+    $tb .= "</div><div>";
+    //add add/remove button here
+    if ($user["active"]){
+      $tb .= "<a href='/budget/?action=removeuser&id=$user[id]' title='Link to remove category'>Remove</a>";
+    } else {
+      $tb .= "<a href='/budget/?action=restoreuser&id=$user[id]' title='Link to restore category'>Restore</a>";
+    }
+    $tb .= "   <a href='/budget/?action=resetpassword&id=$user[id]' title='Link to reset password'>Reset</a>";
+    $tb .= "</div>";
   }
   $tb .= "</div>";
   return $tb;
@@ -134,5 +146,35 @@ function getTypesTable($search='', $status=''){
   return $tb;
 }
 
+function getTabs($page, $selected){
+  $html = "<nav class='tabs'><ul>";
+  switch($page){
+    case 'admin':
+      $html .= "<li";
+      if($selected=="types"){$html .= " class='selected'";}
+      $html .= "><a href='/budget/?action=managetypes' title='Link to manage account types'>Types</a></li>";
+      $html .= "<li";
+      if($selected=="frequencies"){$html .= " class='selected'";}
+      $html .= "><a href='/budget/?action=managefrequencies' title='Link to manage account types'>Frequencies</a></li>";
+      $html .= "<li";
+      if($selected=="categories"){$html .= " class='selected'";}
+      $html .= "><a href='/budget/?action=managecategories' title='Link to manage account types'>Categories</a></li>";
+      $html .= "<li";
+      if($selected=="users"){$html .= " class='selected'";}
+      $html .= "><a href='/budget/?action=manageusers' title='Link to manage account types'>Users</a></li>";
+
+      break;
+    case 'budget':
+      break;
+    default:
+      break;
+  }
+  $html .= "</ul></nav>";
+  return $html;
+}
+
+function getBudget(){
+  
+}
 
 ?>

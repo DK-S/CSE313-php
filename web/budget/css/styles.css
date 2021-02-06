@@ -24,16 +24,17 @@ nav ul li.selected {background-color:grey; transform:scale(1.1); color:red;}
 nav.tabs{background-color: white; padding-top: 20px;}
 nav.tabs ul{list-style: none; padding-left:0em; display:flex; flex-direction: column; grid-gap:0; margin:0;}
 nav.tabs ul li{padding: .5em 0 .5em 0; align-self: center; justify-self: center; border:1px solid; border-top-right-radius: 10px; background-color: moccasin; width:100%;}
-nav.tabs a{color:black; text-decoration:none; padding:1em;}
+nav.tabs a{color:black; text-decoration:none; padding: 0px 0px 0px 1em; width: 100%; display: block;} 
 
-nav.tabs ul li:hover{background-color: lightblue; transform:scale(1.1);}
+nav.tabs ul li:hover{background-color: lightblue; transform:scale(1);}
 
-nav.tabs ul li.selected {background-color: blue; transform:scale(1.1); color:red;}
-
+nav.tabs ul li.selected {background-color: blue; transform:scale(1); color:blue;}
+nav.tabs ul li.selected a{color:white;}
 
 
 
 footer{
+  margin-top: 10px;
   border-top:solid 4px;
   padding: 3px;
 }
@@ -87,8 +88,12 @@ section.getAddress form{display: grid; grid-template-columns: 80px 200px; grid-g
 
 div.table div>img{width: 15px;}
 
-div.table {
+div.table.col_2{
   display: grid; grid-template-columns: auto auto auto auto;
+}
+
+div.table.col_3{
+  display: grid; grid-template-columns: auto auto auto auto auto;
 }
 div.table>div{border:solid 1px; padding:2px;}
 div.table>div.center{text-align: center;}
@@ -119,5 +124,7 @@ div.table>div.center{text-align: center;}
   .shoppingcart div{border:solid 1px; padding: 3px; text-align: center;}
   .shoppingcart div img{width: 100%;}
   .shoppingcart div input{width: 75%; padding: 3px;}
+  nav.tabs ul{flex-direction: row;
+
 }
 .hide{display: none;}

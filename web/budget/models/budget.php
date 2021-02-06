@@ -200,5 +200,28 @@ function restoreCategory($id){
   return $rowsChanged;
 }
 
+function getBudgets(){
+
+}
+
+function getTransactions(){
+
+}
+
+function getAccounts(){
+
+}
+
+function getSubCategoryName($id){
+  $db = dbConnect();
+  $sql = 'SELECT * FROM accountsubcategories WHERE id=:id';
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+  $stmt->execute();
+  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $stmt->closeCursor();
+  return $rows;
+}
+
 
 ?>
