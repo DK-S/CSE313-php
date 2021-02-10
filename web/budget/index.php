@@ -1,29 +1,79 @@
 <?php
   session_start();
-
+//var_dump($_SESSION);
   require_once './library/connections.php';
   require_once './library/functions.php';
   require_once './models/budget.php';
-
+  
   $action = filter_input(INPUT_POST, 'action');
   if ($action == NULL){
     $action = filter_input(INPUT_GET, 'action');
   }
-
+  //defaults for page content
   $callPage = "./views/500.php";
+  $navSelect='';
+  $searchFields = '';
+  $articleContent = '';
+  if(isset($_SESSION['userData'])){$header = getHeader($_SESSION['userData']);}else{$header = getHeader();}
   $tabs = '';
+  //check to see if user is logged in. If not then redirect the action to login
+  if(!$action=='newuser' && !$action=='saveuser'){if(isset($_SESSION['loggedin'])){if(!$_SESSION['loggedin']){$action = 'login';}}else{$action = 'login';}}
+  
   switch($action){
     case 'login':
       $navSelect='dashboard';
       $callPage = 'views/login.php';
       break;
     case 'logout':
+      echo "help";
+      session_destroy();
+      header('Location: /budget/');
+            
       break;
     case 'submitlogin':
+      $navSelect='dashboard';
+      $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_EMAIL);
+      $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
+      $checkEmail = checkEmail($username);
+      $checkPassword = checkPassword($password);
+      if (empty($checkEmail) || empty($checkPassword)){
+        $_SESSION['message']= "<p>Please provide a valid username and password.</p>";
+        $navSelect='dashboard';
+        $callPage = 'views/login.php';
+        break;
+      }
+      $userData = getUserData($username);
+      $hashCheck = password_verify($password, $userData['password']);
+
+      if (!$hashCheck){
+        $_SESSION['message'] = '<p class="notice">Please check your password and try again.</p>';
+        $callPage = 'views/login.php';
+        break;
+      }
+      $_SESSION['loggedin'] = TRUE;
+      array_pop($userData);
+      $_SESSION['userData'] = $userData;
+      $_SESSION['message'] = '';
+      setcookie('firstname', $userData['firstname'], strtotime('+1 year'), '/');
+      if($userData['administrator']){
+        $callPage = "./views/admin.php";
+        $navSelect='admin';
+        $searchFields = getSearch("types", null, null);
+        $articleContent = getTypesTable();
+        $tabs = getTabs('admin', 'types');
+      }else{
+        $callPage = "./views/dashboard.php";
+        $navSelect='dashboard';
+        $searchFields = '';
+        $articleContent = '';
+        $header = getHeader($userData);
+      }
+
       break;
     case 'dashboard':
-      $callPage = "./views/dashboard.php";
+      $callPage = "./views/admin.php";
       $navSelect='dashboard';
+      $tabs = getTabs('budget', 'budget');
       break;
     case 'admin':
       $tabs = getTabs('admin', 'types');
@@ -33,8 +83,51 @@
       $navSelect='admin';
       break;
     case 'newuser':
+      $navSelect='admin';
+      $searchFields ='';
+        $callPage = './views/admin.php';
+        $articleContent = getEditUser();
       break;
     case 'saveuser':
+      $navSelect='dashboard';
+      $callPage = './views/admin.php';
+      $firstName = filter_input(INPUT_POST, 'firstname', FILTER_SANITIZE_STRING);
+      $lastName = filter_input(INPUT_POST, 'lastname', FILTER_SANITIZE_STRING);
+      $userName = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_EMAIL);
+      $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
+      $checkEmail = checkEmail($userName);
+      $checkPassword = checkPassword($password);
+      $existingEmail = emailExists($userName);
+      if ($existingEmail){
+        $_SESSION['message'] = '<p class="notice">That email currently exists. Do you want to login instead?</p>';
+        $callPage = 'views/login.php';
+        break;
+      }
+      if(empty($firstName) || empty($lastName) || empty($checkEmail)){
+        $_SESSION['message'] = '<p>Please provide information for all empty form fields.</p>';
+        $callPage = './views/admin.php';
+        $articleContent = getEditUser();
+        break;
+      }
+
+      if($checkPassword==0){
+        $_SESSION['message'] = '<p>Password does not meet the complexity requirements. You must have 8 characters with at least 1 of each: a capital letter, lowercaser letter, and special character.</p>';
+        $callPage = './views/admin.php';
+        $articleContent = getEditUser();
+        break;
+      }
+      
+      $hashedPwd = password_hash($password, PASSWORD_DEFAULT);
+      $regoutcome = registerUser($firstName, $lastName, $userName, $hashedPwd);
+      if ($regoutcome===1){
+        $_SESSION['message'] = "Thanks for registering $firstName. Please use your email and password to login.";
+        setcookie('firstname', $firstName, strtotime('+1 year'), '/');
+        $callPage = './views/login.php';
+        $articleContent = getTypesTable();
+        $searchFields = getSearch("types", null, null);
+      }
+      
+
       break;
     case 'managetypes':
       $tabs = getTabs('admin', 'types');
@@ -60,7 +153,7 @@
     case 'manageusers':
       $tabs = getTabs('admin', 'users');
       $callPage = './views/admin.php';
-      $articleContent = getUserTable();
+      $articleContent = getUserTable($_SESSION['userData']);
       $searchFields = '';
       $navSelect='admin';
       break;
@@ -175,8 +268,30 @@
       $searchFields = getSearch("frequencies", $search, $status);
       $navSelect='admin';
       break;
+    case 'gotoBudget':
+      $tabs = getTabs('budget', 'budget');
+      $callPage = "./views/admin.php";
+      $navSelect='dashboard';
+      break;
+    case 'gotoAccounts':
+      $tabs = getTabs('budget', 'accounts');
+      $callPage = "./views/admin.php";
+      $navSelect='dashboard';
+      break; 
+    case 'gotoCategories':
+      $tabs = getTabs('budget', 'categories');
+      $callPage = "./views/admin.php";
+      $navSelect='dashboard';
+      break;
+    case 'gotoTransaction':
+      $tabs = getTabs('budget', 'transactions');
+      $callPage = "./views/admin.php";
+      $navSelect='dashboard';
+      break;
     default:
+      $navSelect = '';
       $callPage =  'views/login.php';
+      $callPage = "./views/admin.php";
       break;
   }
   $navList = getNavlist($navSelect);

@@ -13,6 +13,9 @@
     <nav>
       <?php echo $navList; ?>
     </nav>
+    <section class="header">
+      <?php if(isset($header)){echo $header;}?>
+    </section>
     <section>
       <p>This is for all the goodies (graphs and links). While we build this page browse on over to the admin page while it still has unrestricted access.</p>
     </section>

@@ -13,10 +13,13 @@
     <nav>
       <?php echo $navList; ?>
     </nav>
+    <section class="header">
+      <?php if(isset($header)){echo $header;}?>
+    </section>
     <section>
       <?php echo $tabs; ?>
       <article class="admin">
-        <?php echo $searchFields; ?>
+        <?php if(isset($_SESSION['message'])){echo $_SESSION['message'];} echo $searchFields; ?>
         <?php echo $articleContent; ?>
       </article>
     </section>

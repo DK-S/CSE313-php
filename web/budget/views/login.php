@@ -17,10 +17,11 @@
       <form action="/budget/" method="POST">
         <input type="hidden" name="action" value="submitlogin">
         <h1>Sign In</h1>
-        <label for="clientEmail">Email:</label>
-        <input name="clientEmail" id="clientEmail" type="email" placeholder="someone@domain.com" required <?php if (isset($clientEmail)){echo "value='$clientEmail'";}?>>
-        <label for="clientPassword">Password:</label>
-        <input name="clientPassword" id="clientPassword" type="password" required pattern="(?=^.{8,}$)(?=.*\d)(?=.*\W+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$">
+        <?php if(isset($_SESSION['message'])){echo $_SESSION['message'];} ?>
+        <label for="username">Email:</label>
+        <input name="username" id="username" type="email" placeholder="someone@domain.com" required <?php if (isset($email)){echo "value='$email'";}?>>
+        <label for="password">Password:</label>
+        <input name="password" id="password" type="password" required pattern="(?=^.{8,}$)(?=.*\d)(?=.*\W+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$">
         <input name="signinButton" id="signinButton" value="Sign In" type="Submit">
         <a href="./?action=newuser" title="Register an account with us">Not a member yet?</a>
       </form>
