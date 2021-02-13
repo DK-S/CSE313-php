@@ -61,7 +61,7 @@ Create table accounts (id serial not null primary key
 ,accounttypeid int references accounttypes(id)
 ,accountfrequencyid int references accountfrequencies(id)
 ,accountcategoryid int references accountcategories(id)
-,acountsubcategoryid int references accountsubcategories(id)
+,accountsubcategoryid int references accountsubcategories(id)
 ,subcategorycode int
 );
 
@@ -106,4 +106,5 @@ insert into users (firstname, lastname, username, password, active, administrato
 
 /*
 DB is now built and ready for the first user to log in
+alter table accounts rename column acountsubcategoryid accountsubcategoryid
 */
