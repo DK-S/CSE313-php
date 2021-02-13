@@ -136,7 +136,7 @@ div.table>div.center{text-align: center;}
   .shoppingcart div{border:solid 1px; padding: 3px; text-align: center;}
   .shoppingcart div img{width: 100%;}
   .shoppingcart div input{width: 75%; padding: 3px;}
-  nav.tabs ul{flex-direction: row;
+  nav.tabs ul{flex-direction: row;}
 
 }
-.hide{display: none;}
+

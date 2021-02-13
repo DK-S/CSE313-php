@@ -79,6 +79,7 @@
         $searchFields = '';
         $articleContent = '';
         $header = getHeader($userData);
+        $tabs = getTabs('budget', 'accounts');
       }
 
       break;

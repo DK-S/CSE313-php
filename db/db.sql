@@ -102,7 +102,7 @@ insert into accountcategories (name, code, active) values ('Entertainment', 2, T
 insert default administrator
 */
 
-insert into users (firstname, lastname, username, password, active, administrator) VALUES ('Budget', 'Administrator', 'administrator', '', TRUE, TRUE);
+--insert into users (firstname, lastname, username, password, active, administrator) VALUES ('Budget', 'Administrator', 'administrator', '', TRUE, TRUE);
 
 /*
 DB is now built and ready for the first user to log in
