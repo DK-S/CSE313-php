@@ -99,6 +99,11 @@ div.table.col_2{
 div.table.col_3{
   display: grid; grid-template-columns: auto auto auto auto auto;
 }
+
+div.table.col_4{
+  display:grid; grid-template-columns: auto auto auto auto auto;
+
+}
 div.table>div{border:solid 1px; padding:2px;}
 div.table>div.center{text-align: center;}
 
