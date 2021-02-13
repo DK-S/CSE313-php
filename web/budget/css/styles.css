@@ -88,6 +88,10 @@ section.getAddress form{display: grid; grid-template-columns: 80px 200px; grid-g
 
 div.table div>img{width: 15px;}
 
+div.table.col_1{
+  display: grid; grid-template-columns: auto auto auto;
+}
+
 div.table.col_2{
   display: grid; grid-template-columns: auto auto auto auto;
 }
@@ -97,6 +101,14 @@ div.table.col_3{
 }
 div.table>div{border:solid 1px; padding:2px;}
 div.table>div.center{text-align: center;}
+
+.add form{display:grid; grid-template-columns: auto 100px 200px auto;}
+.add form h2{grid-column: 1/-1;}
+.add form label{grid-column: 2/3;}
+.add form input{grid-column: 3/4;}
+.add form input:last-of-type{grid-column: 2/4;}
+
+.header{display:grid; grid-template-columns: auto 100px;}
 
 
 @media screen and (max-width: 650px){

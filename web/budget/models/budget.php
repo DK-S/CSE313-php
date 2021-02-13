@@ -158,6 +158,147 @@ function getCategories($search='', $status=''){
   return $rows;
 }
 
+function getSubCategories($search='', $status=''){
+  $db = dbConnect();
+  $where = '';
+  if(!isset($search)){$search='';}
+  if(!isset($status)){$status='';}
+  if(strlen($search)>0){
+    if(strlen($where)>0){
+      $where .= " AND name like '%$search%' ";
+    }else{
+      $where = " WHERE name like '%$search%' ";
+    }
+  } 
+  if ($status == 'all'){$status='';}
+  if(strlen($status)>0){
+    if(strlen($where)>0){
+      $where .= " AND ";
+    }else{
+      $where = " WHERE ";
+    }
+    switch($status){
+      case "active":
+        $where .= "active=true ";
+        break;
+      case "inactive":
+        $where .= "active=false ";
+        break;
+      default:
+        $where .= "active=true ";
+        break;
+    }
+  } 
+  $sql = "SELECT * FROM accountsubcategories $where";
+  $sql .= " ORDER BY name ASC";
+  $stmt = $db->prepare($sql);
+  $stmt->execute();
+  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $stmt->closeCursor();
+  return $rows;
+}
+
+function getSubCategoryByName($theName){
+  $db = dbConnect();
+  $sql = "SELECT * FROM accountsubcategories WHERE name=:name";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(":name", $theName, PDO::PARAM_STR);
+  $stmt->execute();
+  $rows = $stmt->fetch(PDO::FETCH_ASSOC);
+  $stmt->closeCursor();
+  return $rows;
+}
+
+function addSubCategory($newName){
+  $db = dbConnect();
+  $sql = "INSERT INTO accountsubcategories (name, active) VALUES (:name, TRUE);";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(":name", $newName, PDO::PARAM_STR);
+  $stmt->execute();
+  $rows = $stmt->rowCount();
+  $stmt->closeCursor();
+  return $rows;
+
+}
+
+function getAccounts($userid){
+  $db = dbConnect();
+  $sql = "SELECT * FROM accounts WHERE userid=:id";
+  $sql .= " ORDER BY accounttypeid ASC, accountfrequencyid ASC, accountcategoryid ASC, subcategorycode ASC";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(":id", $userid, PDO::PARAM_INT);
+  $stmt->execute();
+  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $stmt->closeCursor();
+  return $rows;
+}
+
+function getAccount($id){
+  $db = dbConnect();
+  $sql = "SELECT * FROM accounts WHERE id=:id";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(":id", $id, PDO::PARAM_INT);
+  $stmt->execute();
+  $rows = $stmt->fetch(PDO::FETCH_ASSOC);
+  $stmt->closeCursor();
+  return $rows;
+}
+
+function addAccount($name, $description, $userid, $accounttypeid, $accountfrequencyid, $accountcategoryid, $accountsubcategoryid, $subcategorycode){
+  $db = dbConnect();
+  $sql = "INSERT INTO accounts (name, description, userid,";
+  $sql .= " active, accounttypeid, accountfrequencyid, accountcategoryid, ";
+  $sql .= "accountsubcategoryid, subcategorycode) VALUES (:name, :description, ";
+  $sql .= ":userid, TRUE, :accounttypeid, :accountfrequencyid, :accountcategoryid, ";
+  $sql .= ":accountsubcategoryid, :subcategorycode);";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(":name", $name, PDO::PARAM_STR);
+  $stmt->bindValue(":description", $description, PDO::PARAM_STR);
+  $stmt->bindValue(":userid", $userid, PDO::PARAM_INT);
+  $stmt->bindValue(":accounttypeid", $accounttypeid, PDO::PARAM_INT);
+  $stmt->bindValue(":accountfrequencyid", $accountfrequencyid, PDO::PARAM_INT);
+  $stmt->bindValue(":accountcategoryid", $accountcategoryid, PDO::PARAM_INT);
+  $stmt->bindValue(":accountsubcategoryid", $accountsubcategoryid, PDO::PARAM_INT);
+  $stmt->bindValue(":subcategorycode", $subcategorycode, PDO::PARAM_INT);
+  $stmt->execute();
+  $rows = $stmt->rowCount();
+  $stmt->closeCursor();
+  return $rows;
+}
+
+function removeAccount($id){
+  $db = dbConnect();
+  $sql = "UPDATE accounts SET active=false WHERE id=:id";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+  $stmt->execute();
+  $rowsChanged = $stmt->rowCount();
+  $stmt->closeCursor();
+  return $rowsChanged;
+}
+
+function restoreAccount($id){
+  $db = dbConnect();
+  $sql = "UPDATE accounts SET active=true WHERE id=:id";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+  $stmt->execute();
+  $rowsChanged = $stmt->rowCount();
+  $stmt->closeCursor();
+  return $rowsChanged;
+}
+
+function getTheType($id){
+  $db = dbConnect();
+  $sql = "SELECT * FROM accountTypes WHERE id=:id";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(":id", $id, PDO::PARAM_INT);
+  $stmt->execute();
+  $rows = $stmt->fetch(PDO::FETCH_ASSOC);
+  $stmt->closeCursor();
+  return $rows;
+}
+
 function removeType($id){
   $db = dbConnect();
   $sql = "UPDATE accountTypes SET active=false WHERE id=:id";
@@ -180,6 +321,17 @@ function restoreType($id){
   return $rowsChanged;
 }
 
+function getFrequency($id){
+  $db = dbConnect();
+  $sql = "SELECT * FROM accountFrequencies WHERE id=:id";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(":id", $id, PDO::PARAM_INT);
+  $stmt->execute();
+  $rows = $stmt->fetch(PDO::FETCH_ASSOC);
+  $stmt->closeCursor();
+  return $rows;
+}
+
 function removeFrequency($id){
   $db = dbConnect();
   $sql = "UPDATE accountFrequencies SET active=false WHERE id=:id";
@@ -200,6 +352,17 @@ function restoreFrequency($id){
   $rowsChanged = $stmt->rowCount();
   $stmt->closeCursor();
   return $rowsChanged;
+}
+
+function getCategory($id){
+  $db = dbConnect();
+  $sql = "SELECT * FROM accountCategories WHERE id=:id";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(":id", $id, PDO::PARAM_INT);
+  $stmt->execute();
+  $rows = $stmt->fetch(PDO::FETCH_ASSOC);
+  $stmt->closeCursor();
+  return $rows;
 }
 
 function removeCategory($id){
@@ -229,10 +392,6 @@ function getBudgets(){
 }
 
 function getTransactions(){
-
-}
-
-function getAccounts(){
 
 }
 

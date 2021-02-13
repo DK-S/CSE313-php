@@ -1,6 +1,8 @@
 <?php
   session_start();
 //var_dump($_SESSION);
+  $_SESSION['message']='';
+  if (!isset($_SESSION['loggedin'])){$_SESSION['loggedin'] = false;}
   require_once './library/connections.php';
   require_once './library/functions.php';
   require_once './models/budget.php';
@@ -9,6 +11,7 @@
   if ($action == NULL){
     $action = filter_input(INPUT_GET, 'action');
   }
+  var_dump($action);
   //defaults for page content
   $callPage = "./views/500.php";
   $navSelect='';
@@ -17,7 +20,16 @@
   if(isset($_SESSION['userData'])){$header = getHeader($_SESSION['userData']);}else{$header = getHeader();}
   $tabs = '';
   //check to see if user is logged in. If not then redirect the action to login
-  if(!$action=='newuser' && !$action=='saveuser'){if(isset($_SESSION['loggedin'])){if(!$_SESSION['loggedin']){$action = 'login';}}else{$action = 'login';}}
+  if($action=='newuser' || $action=='saveuser' ||  $action=='submitlogin'){
+  }else{
+    if(isset($_SESSION['loggedin'])){
+      if(!$_SESSION['loggedin']){
+        $action = 'login';
+      }
+    }else{
+      $action = 'login';
+    }
+  }
   
   switch($action){
     case 'login':
@@ -277,11 +289,76 @@
       $tabs = getTabs('budget', 'accounts');
       $callPage = "./views/admin.php";
       $navSelect='dashboard';
-      break; 
+      $articleContent = getAccountsTable($_SESSION['userData']['id']);
+      $addSection = getAddSection('addAccounts');
+      //var_dump($articleContent);
+      break;
+    case 'gotoaddAccounts':
+      $tabs = getTabs('budget', 'accounts');
+      $callPage = "./views/admin.php";
+      $navSelect='dashboard';
+      $articleContent = '';
+      $addSection = getAddSection('gotoaddAccounts');  
+      break;
+    case 'addAccount':
+      $tabs = getTabs('budget', 'accounts');
+      $callPage = "./views/admin.php";
+      $navSelect='dashboard';
+      $accountName = filter_input(INPUT_POST, 'accountName', FILTER_SANITIZE_STRING);
+      $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
+      $accounttypeid = filter_input(INPUT_POST, 'accounttypeid', FILTER_SANITIZE_NUMBER_INT);
+      $accountfrequencyid = filter_input(INPUT_POST, 'accountfrequencyid', FILTER_SANITIZE_NUMBER_INT);
+      $accountcategoryid = filter_input(INPUT_POST, 'accountcategoryid', FILTER_SANITIZE_NUMBER_INT);
+      $acountsubcategoryid = filter_input(INPUT_POST, 'acountsubcategoryid', FILTER_SANITIZE_NUMBER_INT);
+      $subcategorycode = filter_input(INPUT_POST, 'subcategorycode', FILTER_SANITIZE_NUMBER_INT);
+
+      $rows = addAccount($accountName, $description, $_SESSION['userData']['id'], $accounttypeid, $accountfrequencyid, $accountcategoryid, $acountsubcategoryid, $subcategorycode);
+      if($rows > 0){
+        $_Session['message']="Failed to add the data. Please verify and try again";
+        $articleContent = getAccountsTable($_SESSION['userData']['id']);
+        $addSection = getAddSection('addAccounts');  
+      }else{
+        $articleContent = '';
+        $addSection = getAddSection('gotoaddAccounts');
+        var_dump($_POST);
+      }
+
+      break;   
     case 'gotoCategories':
       $tabs = getTabs('budget', 'categories');
       $callPage = "./views/admin.php";
       $navSelect='dashboard';
+      $searchFields = getSearch("subCategories", null, null);
+      $articleContent = getSubCategoryTable();
+      $addSection = getAddSection('subCategories');
+      break;
+    case 'filterSubCategories':
+      //get the search varaibles and filter the request
+      $search = filter_input(INPUT_POST, 'findName', FILTER_SANITIZE_STRING);
+      $status = filter_input(INPUT_POST, 'findStatus', FILTER_SANITIZE_STRING);
+      //var_dump($status); die();
+      $addSection = getAddSection('subCategories');
+      $articleContent = getSubCategoryTable($search, $status);
+      $callPage = './views/admin.php';
+      $tabs = getTabs('budget', 'categories');
+      $searchFields = getSearch("subCategories", $search, $status);
+      $navSelect='dashboard';
+      break;
+    case 'addSubCategory':
+      $newName = filter_input(INPUT_POST, 'newName', FILTER_SANITIZE_STRING);
+      $newItem = getSubCategoryByName($newName);
+      if(empty($newItem)){
+        $rows = addSubCategory($newName);
+      }else{
+        $_SESSION['message'] = "That Sub Category already exists feel free to use it on your accounts";
+      }
+      $tabs = getTabs('budget', 'categories');
+      $callPage = "./views/admin.php";
+      $navSelect='dashboard';
+      $searchFields = getSearch("subCategories", null, null);
+      $articleContent = getSubCategoryTable($search, $status);
+      $addSection = getAddSection('subCategories');
+
       break;
     case 'gotoTransaction':
       $tabs = getTabs('budget', 'transactions');

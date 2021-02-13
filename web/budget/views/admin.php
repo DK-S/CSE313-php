@@ -22,6 +22,9 @@
         <?php if(isset($_SESSION['message'])){echo $_SESSION['message'];} echo $searchFields; ?>
         <?php echo $articleContent; ?>
       </article>
+      <article class="add">
+        <?php if(isset($addSection)){echo $addSection;} ?>
+      </article>
     </section>
     <footer>
       <?php include $_SERVER['DOCUMENT_ROOT'].'/budget/common/footer.php';?>
