@@ -151,8 +151,8 @@ function getAddSection($page){
         $html .= "<option value='$category[id]'>$category[name]</option>";
       }
       $html .= "</select>";
-      $html .= "<label for='acountsubcategoryid'>Sub Category</label>";
-      $html .= "<select name='acountsubcategoryid' type='text'>";
+      $html .= "<label for='accountsubcategoryid'>Sub Category</label>";
+      $html .= "<select name='accountsubcategoryid' type='text'>";
       $subCategories = getSubCategories('', 'active');
       foreach($subCategories as $subCategory){
         $html .= "<option value='$subCategory[id]'>$subCategory[name]</option>";
@@ -164,6 +164,26 @@ function getAddSection($page){
       $html .= "<input type='submit' value='Add Account'>";
       $html .= "</form>";
       break;
+    case 'addTransaction':
+      $html = "<form action='/budget/' method='POST'>";
+      $html .= "<h2>Add Transaction</h2>";
+      $html .= "<label for='accountid'>Account:</label>";
+      $html .= "<select name='accountid' type='text'>";
+      $accounts = getAccounts($_SESSION['userData']['id']);
+      foreach ($accounts as $account){
+        $html .= "<option value='$account[id]'>".getAccountNumberByID($account['id']);
+        $html .= " $account[name]</option>";
+      }
+      $html .= "</select>";
+      $html .= "<label for='amount'>Amount</label>";
+      $html .= "<input name='amount' type='number' step='0.01'>";
+      $html .= "<label for='notes'>Notes</label>";
+      $html .= "<input name='notes' type='text'>";
+      
+      $html .= "<input type='hidden' name='action' value='addTransaction'>";
+      $html .= "<input type='submit' value='Add Transaction'>";
+      $html .= "</form>";
+      
     default:
       break;
   }
@@ -344,7 +364,29 @@ function getAccountsTable(){
     if ($account['active']){
       $html .= "<img src='/budget/images/greencheck.jpg' alt='Green Checkmark'>";
     }
-    $html .= "</div><div></div>";
+    $html .= "</div><div class='controls'>";
+    if ($account['active']){
+      $html .= "<form action='/budget/' method='post'>";
+      $html .= "<input type='hidden' name='id' value='$account[id]'>";
+      $html .= "<input type='hidden' name='action' value='editAccount'>";
+      $html .= "<input type='submit' value='Edit'>";
+      $html .= "</form>";
+    }
+    $html .= "<form action='/budget/' method='post'>";
+    $html .= "<input type='hidden' name='id' value='$account[id]'>";
+    $html .= "<input type='hidden' name='action' value='removeAccount'>";
+    $html .= "<input type='submit' value='";
+    if ($account['active']){$html .= "Remove";}else{$html .= "Restore";}
+    $html .= "'>";
+    $html .= "</form>";
+    if ($account['active']){
+      $html .= "<form action='/budget/' method='post'>";
+      $html .= "<input type='hidden' name='id' value='$account[id]'>";
+      $html .= "<input type='hidden' name='action' value='gotoAddBudget'>";
+      $html .= "<input type='submit' value='Edit'>";
+      $html .= "</form>";
+    }
+    $html .= "</div>";
   }
   $html .= "</div>";
   return $html;
@@ -354,4 +396,86 @@ function getAccountNumber($type, $frequency, $category, $subCategory){
   return $type['code'].$frequency['code'].'0'.$category['code'].'-'.sprintf('%02d', $subCategory);
 }
 
+function getAccountNumberByID($id){
+  $account = getAccount($id);
+  $type = getTypesByID($account['accounttypeid']);
+  $frequency = getFrequencyByID($account['accountfrequencyid']);
+  $category = getCategoryByID($account['accountcategoryid']);
+  $subCategory = $account['subcategorycode'];
+  return $type['code'].$frequency['code'].'0'.$category['code'].'-'.sprintf('%02d', $subCategory);
+}
+
+function getEditAccountsContent($accountID){
+  $account = getAccount($accountID);
+  var_dump($accountID);
+  $html = "<h2>".getAccountNumber(getTheType($account['accounttypeid']), getFrequency($account['accountfrequencyid']), getCategory($account['accountcategoryid']), $account['subcategorycode'])."</h2>";
+  $html .= "<form action='/budget/' method='POST'>";
+  $html .= "<label for='accountName'>Name:</label>";
+  $html .= "<input name='accountName' type='text' value='$account[name]'>";
+  $html .= "<label for='description'>Description:</label>";
+  $html .= "<input name='description' type='text' value='$account[description]'>";
+  $html .= "<label for='accounttypeid'>Type</label>";
+  $html .= "<select name='accounttypeid' type='text'>";
+  $types = getTypes('', 'active');
+  foreach ($types as $type){
+    $html .= "<option value='$type[id]'";
+    if($type['id'] == $account['accounttypeid']){$html .= " selected";}
+    $html .= ">$type[name]</option>";
+  }
+  $html .= "</select>";
+  $html .= "<label for='accountfrequencyid'>Frequency</label>";
+  $html .= "<select name='accountfrequencyid' type='text'>";
+  $frequencies = getFrequencies('', 'active');
+  foreach($frequencies as $frequency){
+    $html .= "<option value='$frequency[id]'";
+    if($frequency['id'] == $account['accountfrequencyid']){$html .= " selected";}
+    $html .= ">$frequency[name]</option>";
+  }
+  $html .= "</select>";
+  $html .= "<label for='accountcategoryid'>Category</label>";
+  $html .= "<select name='accountcategoryid' type='text'>";
+  $categories = getCategories('', 'active');
+  foreach($categories as $category){
+    $html .= "<option value='$category[id]'";
+    if($category['id'] == $account['accountcategoryid']){$html .= " selected";}
+    $html .= ">$category[name]</option>";
+  }
+  $html .= "</select>";
+  $html .= "<label for='accountsubcategoryid'>Sub Category</label>";
+  $html .= "<select name='accountsubcategoryid' type='text'>";
+  $subCategories = getSubCategories('', 'active');
+  foreach($subCategories as $subCategory){
+    $html .= "<option value='$subCategory[id]'";
+    if($subCategory['id'] == $account['accountsubcategoryid']){$html .= " selected";}
+    $html .= ">$subCategory[name]</option>";
+  }
+  $html .= "</select>";
+  $html .= "<label for='subcategorycode'>Sub Category Code</label>";
+  $html .= "<input name='subcategorycode' type='number' value='$account[subcategorycode]'>";
+  $html .= "<input type='hidden' name='action' value='saveAccount'>";
+  $html .= "<input type='hidden' name='id' value='$account[id]'>";
+  $html .= "<input type='submit' value='Save Account'>";
+  $html .= "</form>";
+  return $html;
+}
+
+function getTransactionsTable($fromDate=null, $toDate=null){
+  if($fromDate==null){$fromDate=strtotime("-1 Months");}
+  if($toDate==null){$toDate=strtotime("+1 Day");}
+  $transactions = getTransactions($fromDate, $toDate);
+  $html = "<div class='table col_4'>";
+  $html .= "<div>Date</div><div>Account</div><div>Amount</div><div>Notes</div><div></div>";
+  foreach ($transactions as $transaction){
+    $tDate = strtotime($transaction['tdate']);
+    $account = getAccount($transaction['accountid']);
+    $accountName = getAccountNumberByID($account['id']).' '.$account['name'];
+    $notes = $transaction['notes'];
+    $amount = $transaction['amount'];
+    $html .= "<div>$tDate</div><div>$accountName</div><div>$amount</div><div>";
+    $html .= "$notes</div><div class='controls'>";
+    $html .= "</div>";
+  }
+  $html .= "</div>";
+  return $html;
+}
 ?>

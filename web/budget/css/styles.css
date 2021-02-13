@@ -108,6 +108,14 @@ div.table>div.center{text-align: center;}
 .add form input{grid-column: 3/4;}
 .add form input:last-of-type{grid-column: 2/4;}
 
+.admin form{display:grid; grid-template-columns: auto 100px 200px auto;}
+.admin form h2{grid-column: 1/-1;}
+.admin form label{grid-column: 2/3;}
+.admin form input{grid-column: 3/4;}
+.admin form input:last-of-type{grid-column: 2/4;}
+
+.controls form{display:inline;}
+
 .header{display:grid; grid-template-columns: auto 100px;}
 
 

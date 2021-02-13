@@ -76,6 +76,17 @@ function getTypes($search='', $status=''){
   return $rows;
 }
 
+function getTypesByID($id){
+  $db = dbConnect();
+  $sql = "SELECT * FROM accounttypes WHERE id=:id";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(":id", $id, PDO::PARAM_INT);
+  $stmt->execute();
+  $rows = $stmt->fetch(PDO::FETCH_ASSOC);
+  $stmt->closeCursor();
+  return $rows;
+}
+
 function getFrequencies($search='', $status=''){
   $db = dbConnect();
   $where = '';
@@ -117,6 +128,17 @@ function getFrequencies($search='', $status=''){
   return $rows;
 }
 
+function getFrequencyByID($id){
+  $db = dbConnect();
+  $sql = "SELECT * FROM accountfrequencies WHERE id=:id";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(":id", $id, PDO::PARAM_INT);
+  $stmt->execute();
+  $rows = $stmt->fetch(PDO::FETCH_ASSOC);
+  $stmt->closeCursor();
+  return $rows;
+}
+
 function getCategories($search='', $status=''){
   $db = dbConnect();
   $where = '';
@@ -154,6 +176,17 @@ function getCategories($search='', $status=''){
   $stmt = $db->prepare($sql);
   $stmt->execute();
   $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $stmt->closeCursor();
+  return $rows;
+}
+
+function getCategoryByID($id){
+  $db = dbConnect();
+  $sql = "SELECT * FROM accountcategories WHERE id=:id";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(":id", $id, PDO::PARAM_INT);
+  $stmt->execute();
+  $rows = $stmt->fetch(PDO::FETCH_ASSOC);
   $stmt->closeCursor();
   return $rows;
 }
@@ -203,6 +236,17 @@ function getSubCategoryByName($theName){
   $sql = "SELECT * FROM accountsubcategories WHERE name=:name";
   $stmt = $db->prepare($sql);
   $stmt->bindValue(":name", $theName, PDO::PARAM_STR);
+  $stmt->execute();
+  $rows = $stmt->fetch(PDO::FETCH_ASSOC);
+  $stmt->closeCursor();
+  return $rows;
+}
+
+function getSubCategoryByID($id){
+  $db = dbConnect();
+  $sql = "SELECT * FROM accountsubcategories WHERE id=:id";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(":id", $id, PDO::PARAM_INT);
   $stmt->execute();
   $rows = $stmt->fetch(PDO::FETCH_ASSOC);
   $stmt->closeCursor();
@@ -286,6 +330,25 @@ function restoreAccount($id){
   $rowsChanged = $stmt->rowCount();
   $stmt->closeCursor();
   return $rowsChanged;
+}
+
+function saveAccount($id, $name, $description, $accounttypeid, $accountfrequencyid, $accountcategoryid, $accountsubcategoryid, $subcategorycode){
+  $db = dbConnect();
+  $sql = "UPDATE accounts SET ";
+  $sql .= "name='$name'";
+  $sql .= ", description='$description'";
+  $sql .= ", accounttypeid='$accounttypeid'";
+  $sql .= ", accountfrequencyid='$accountfrequencyid'";
+  $sql .= ", accountcategoryid='$accountcategoryid'";
+  $sql .= ", accountsubcategoryid='$accountsubcategoryid'";
+  $sql .= ", subcategorycode='$subcategorycode'";
+  $sql .= " WHERE id=:id";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(":id", $id, PDO::PARAM_INT);
+  $stmt->execute();
+  $rows = $stmt->rowCount();
+  $stmt->closeCursor();
+  return $rows;
 }
 
 function getTheType($id){
@@ -390,9 +453,40 @@ function restoreCategory($id){
 function getBudgets(){
 
 }
+//SELECT * FROM transactionlogs where tdate>'01/13/2021 21:57:18' AND tdate<'01/01/1970 00:00:00' ORDER BY tdate ASC;
+function getTransactions($fromDate, $toDate){
+  if(!isset($fromDate)){$fromDate=strtotime("-1 Months");}
+  if(!isset($toDate)){$toDate=strtotime("+1 Day");}
+  //var_dump($fromDate);
+  //echo date("Y-m-d H:i:s", $fromDate);
+  $db = dbConnect();
+  $sql = "SELECT * FROM transactionlogs where tdate>:fdate AND tdate<:tdate";
+  $sql .= " ORDER BY tdate ASC";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(":fdate", date("m/d/Y H:i:s", $fromDate), PDO::PARAM_STR);
+  $stmt->bindValue(":tdate", date("m/d/Y H:i:s", $toDate), PDO::PARAM_STR);
+  $stmt->execute();
+  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $stmt->closeCursor();
+  return $rows;
+}
 
-function getTransactions(){
-
+function addTransaction($accountID, $amount, $notes){
+  //notes amount accountid tdate
+  $theDate=strtotime("Today");
+  $tDate = date("m/d/Y H:i:s", $theDate);
+  $db = dbConnect();
+  $sql = "INSERT INTO transactionlogs (accountid, amount, notes,";
+  $sql .= " tdate) VALUES (:accountid, :amount, :notes, :tdate);";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(":accountid", $accountID, PDO::PARAM_STR);
+  $stmt->bindValue(":amount", $amount, PDO::PARAM_STR);
+  $stmt->bindValue(":notes", $notes, PDO::PARAM_INT);
+  $stmt->bindValue(":tdate", $tDate, PDO::PARAM_INT);
+  $stmt->execute();
+  $rows = $stmt->rowCount();
+  $stmt->closeCursor();
+  return $rows;
 }
 
 function getSubCategoryName($id){

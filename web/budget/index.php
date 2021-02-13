@@ -77,7 +77,7 @@
         $callPage = "./views/admin.php";
         $navSelect='dashboard';
         $searchFields = '';
-        $articleContent = '<p>This is for all the goodies (graphs and links). While we build this page browse on over to the admin page while it still has unrestricted access.</p>';
+        $articleContent = '<p>This is for all the goodies (graphs and links).</p>';
         $header = getHeader($userData);
         $tabs = getTabs('budget', 'budget');
       }
@@ -310,10 +310,10 @@
       $accounttypeid = filter_input(INPUT_POST, 'accounttypeid', FILTER_SANITIZE_NUMBER_INT);
       $accountfrequencyid = filter_input(INPUT_POST, 'accountfrequencyid', FILTER_SANITIZE_NUMBER_INT);
       $accountcategoryid = filter_input(INPUT_POST, 'accountcategoryid', FILTER_SANITIZE_NUMBER_INT);
-      $acountsubcategoryid = filter_input(INPUT_POST, 'acountsubcategoryid', FILTER_SANITIZE_NUMBER_INT);
+      $accountsubcategoryid = filter_input(INPUT_POST, 'accountsubcategoryid', FILTER_SANITIZE_NUMBER_INT);
       $subcategorycode = filter_input(INPUT_POST, 'subcategorycode', FILTER_SANITIZE_NUMBER_INT);
 
-      $rows = addAccount($accountName, $description, $_SESSION['userData']['id'], $accounttypeid, $accountfrequencyid, $accountcategoryid, $acountsubcategoryid, $subcategorycode);
+      $rows = addAccount($accountName, $description, $_SESSION['userData']['id'], $accounttypeid, $accountfrequencyid, $accountcategoryid, $accountsubcategoryid, $subcategorycode);
       if($rows > 0){
         $_Session['message']="Failed to add the data. Please verify and try again";
         $articleContent = getAccountsTable($_SESSION['userData']['id']);
@@ -321,10 +321,41 @@
       }else{
         $articleContent = '';
         $addSection = getAddSection('gotoaddAccounts');
-        var_dump($_POST);
       }
-
       break;   
+    case 'editAccount':
+      $tabs = getTabs('budget', 'accounts');
+      $callPage = "./views/admin.php";
+      $navSelect='dashboard';
+      $accountid = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+      $articleContent = getEditAccountsContent($accountid);
+      break;
+    case 'removeAccount':
+      $tabs = getTabs('budget', 'accounts');
+      $accountid = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+      $account = getAccount($accountid);
+      if($account['active']){removeAccount($accountid);}else{restoreAccount($accountid);}
+      $callPage = "./views/admin.php";
+      $navSelect='dashboard';
+      $articleContent = getAccountsTable($_SESSION['userData']['id']);
+      $addSection = getAddSection('addAccounts');
+      break;
+    case 'saveAccount':
+      $tabs = getTabs('budget', 'accounts');
+      $accountid = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+      $accountName = filter_input(INPUT_POST, 'accountName', FILTER_SANITIZE_STRING);
+      $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
+      $accounttypeid = filter_input(INPUT_POST, 'accounttypeid', FILTER_SANITIZE_NUMBER_INT);
+      $accountfrequencyid = filter_input(INPUT_POST, 'accountfrequencyid', FILTER_SANITIZE_NUMBER_INT);
+      $accountcategoryid = filter_input(INPUT_POST, 'accountcategoryid', FILTER_SANITIZE_NUMBER_INT);
+      $accountsubcategoryid = filter_input(INPUT_POST, 'accountsubcategoryid', FILTER_SANITIZE_NUMBER_INT);
+      $subcategorycode = filter_input(INPUT_POST, 'subcategorycode', FILTER_SANITIZE_NUMBER_INT);
+      saveAccount($accountid, $accountName, $description, $accounttypeid, $accountfrequencyid, $accountcategoryid, $accountsubcategoryid, $subcategorycode);
+      $callPage = "./views/admin.php";
+      $navSelect='dashboard';
+      $articleContent = getAccountsTable($_SESSION['userData']['id']);
+      $addSection = getAddSection('addAccounts');
+      break;
     case 'gotoCategories':
       $tabs = getTabs('budget', 'categories');
       $callPage = "./views/admin.php";
@@ -365,6 +396,25 @@
       $tabs = getTabs('budget', 'transactions');
       $callPage = "./views/admin.php";
       $navSelect='dashboard';
+      $searchFields = getSearch("transactions", null, null);
+      $articleContent = getTransactionsTable();
+      $addSection = getAddSection('addTransaction');
+      break;
+    case 'addTransaction':
+      $tabs = getTabs('budget', 'transactions');
+      $callPage = "./views/admin.php";
+      $navSelect='dashboard';
+      $accountID = filter_input(INPUT_POST, 'accountid', FILTER_SANITIZE_NUMBER_INT);
+      $amount = filter_input(INPUT_POST, 'amount', FILTER_SANITIZE_NUMBER_FLOAT);
+      $notes = filter_input(INPUT_POST, 'notes', FILTER_SANITIZE_STRING);
+      $rows = addTransaction($accountID, $amount, $notes);
+      $searchFields = getSearch("transactions", null, null);
+      $articleContent = getTransactionsTable();
+      $addSection = getAddSection('addTransaction');
+      
+      break;
+    case 'gotoAddBudget':
+      
       break;
     default:
       $navSelect = '';
