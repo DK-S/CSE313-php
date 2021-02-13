@@ -471,7 +471,7 @@ function getTransactionsTable($fromDate=null, $toDate=null){
     $accountName = getAccountNumberByID($account['id']).' '.$account['name'];
     $notes = $transaction['notes'];
     $amount = $transaction['amount'];
-    $html .= "<div>$tDate</div><div>$accountName</div><div>$amount</div><div>";
+    $html .= "<div>".date("m/d/Y", $tDate)."</div><div>$accountName</div><div>$amount</div><div>";
     $html .= "$notes</div><div class='controls'>";
     $html .= "</div>";
   }
