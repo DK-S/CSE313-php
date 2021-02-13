@@ -74,12 +74,12 @@
         $articleContent = getTypesTable();
         $tabs = getTabs('admin', 'types');
       }else{
-        $callPage = "./views/dashboard.php";
+        $callPage = "./views/admin.php";
         $navSelect='dashboard';
         $searchFields = '';
-        $articleContent = '';
+        $articleContent = '<p>This is for all the goodies (graphs and links). While we build this page browse on over to the admin page while it still has unrestricted access.</p>';
         $header = getHeader($userData);
-        $tabs = getTabs('budget', 'accounts');
+        $tabs = getTabs('budget', 'budget');
       }
 
       break;
