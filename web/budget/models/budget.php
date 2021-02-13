@@ -265,9 +265,10 @@ function addSubCategory($newName){
 
 }
 
-function getAccounts($userid){
+function getAccounts($userid, $onlyActive=FALSE){
   $db = dbConnect();
   $sql = "SELECT * FROM accounts WHERE userid=:id";
+  if($onlyActive){$sql .= " AND active=true";}
   $sql .= " ORDER BY accounttypeid ASC, accountfrequencyid ASC, accountcategoryid ASC, subcategorycode ASC";
   $stmt = $db->prepare($sql);
   $stmt->bindValue(":id", $userid, PDO::PARAM_INT);
@@ -453,18 +454,22 @@ function restoreCategory($id){
 function getBudgets(){
 
 }
-//SELECT * FROM transactionlogs where tdate>'01/13/2021 21:57:18' AND tdate<'01/01/1970 00:00:00' ORDER BY tdate ASC;
+
 function getTransactions($fromDate, $toDate){
   if(!isset($fromDate)){$fromDate=strtotime("-1 Months");}
   if(!isset($toDate)){$toDate=strtotime("+1 Day");}
   //var_dump($fromDate);
   //echo date("Y-m-d H:i:s", $fromDate);
   $db = dbConnect();
-  $sql = "SELECT * FROM transactionlogs where tdate>:fdate AND tdate<:tdate";
+  $sql = "SELECT * FROM transactionlogs as tl";
+  $sql .= " inner join accounts as a on tl.accountid = a.id";
+  $sql .= " inner join users as u on u.id = a.userid";
+  $sql .= " where tdate>:fdate AND tdate<:tdate AND a.userid=:uid";
   $sql .= " ORDER BY tdate ASC";
   $stmt = $db->prepare($sql);
   $stmt->bindValue(":fdate", date("m/d/Y H:i:s", $fromDate), PDO::PARAM_STR);
   $stmt->bindValue(":tdate", date("m/d/Y H:i:s", $toDate), PDO::PARAM_STR);
+  $stmt->bindValue(":uid", $_SESSION['userData']['id'], PDO::PARAM_INT);
   $stmt->execute();
   $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
   $stmt->closeCursor();

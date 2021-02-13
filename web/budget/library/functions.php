@@ -169,7 +169,7 @@ function getAddSection($page){
       $html .= "<h2>Add Transaction</h2>";
       $html .= "<label for='accountid'>Account:</label>";
       $html .= "<select name='accountid' type='text'>";
-      $accounts = getAccounts($_SESSION['userData']['id']);
+      $accounts = getAccounts($_SESSION['userData']['id'], TRUE);
       foreach ($accounts as $account){
         $html .= "<option value='$account[id]'>".getAccountNumberByID($account['id']);
         $html .= " $account[name]</option>";
@@ -383,7 +383,7 @@ function getAccountsTable(){
       $html .= "<form action='/budget/' method='post'>";
       $html .= "<input type='hidden' name='id' value='$account[id]'>";
       $html .= "<input type='hidden' name='action' value='gotoAddBudget'>";
-      $html .= "<input type='submit' value='Edit'>";
+      $html .= "<input type='submit' value='Budget'>";
       $html .= "</form>";
     }
     $html .= "</div>";

@@ -62,6 +62,11 @@
         $callPage = 'views/login.php';
         break;
       }
+      if (!$userData['active']){
+        $_SESSION['message'] = '<p class="notice">Please check your password and try again.</p>';
+        $callPage = 'views/login.php';
+        break;
+      }
       $_SESSION['loggedin'] = TRUE;
       array_pop($userData);
       $_SESSION['userData'] = $userData;
@@ -407,7 +412,12 @@
       $accountID = filter_input(INPUT_POST, 'accountid', FILTER_SANITIZE_NUMBER_INT);
       $amount = filter_input(INPUT_POST, 'amount', FILTER_SANITIZE_NUMBER_FLOAT);
       $notes = filter_input(INPUT_POST, 'notes', FILTER_SANITIZE_STRING);
-      $rows = addTransaction($accountID, $amount, $notes);
+      if(!isset($amount)){$amount=0;}
+      if(!isset($accountid)){$accountid=0;}
+      if($accountid>0 && $amount>0){       
+        $rows = addTransaction($accountID, $amount, $notes);
+      }else{$_SESSION['message']='You need to specify an account and an amount.';}
+      
       $searchFields = getSearch("transactions", null, null);
       $articleContent = getTransactionsTable();
       $addSection = getAddSection('addTransaction');
