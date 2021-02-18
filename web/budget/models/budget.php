@@ -451,8 +451,86 @@ function restoreCategory($id){
   return $rowsChanged;
 }
 
-function getBudgets(){
+function getBudgets($theDate){
+  $db = dbConnect();
+  $sql = "SELECT *, b.id as bid, b.accountid as b_aid, a.id as aid FROM budgets as b inner join accounts as a on a.id = b.accountid";
+  $sql .= " WHERE b.byear=:byear AND b.bmonth=:bmonth";
+  $sql .= " ORDER BY a.accounttypeid ASC, a.accountfrequencyid ASC, a.accountcategoryid ASC, a.subcategorycode DESC";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(":byear", date("Y", $theDate));
+  $stmt->bindValue(":bmonth", date("m", $theDate));
+  $stmt->execute();
+  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $stmt->closeCursor();
+  return $rows;
+}
 
+function getBudgetByAccount($accountid){
+  $db = dbConnect();
+  $sql = "SELECT * FROM budgets";
+  $sql .= " WHERE accountid=:aid";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(":aid", $accountid);
+  $stmt->execute();
+  $rows = $stmt->fetch(PDO::FETCH_ASSOC);
+  $stmt->closeCursor();
+  return $rows;
+}
+
+function addBudget($accountid, $theDate, $amount){
+  $db = dbConnect();
+  $id = budgetExists($accountid, $theDate);
+  if($id > 0){
+    $sql = "UPDATE budgets SET accountid=:aid, byear=:byear, bmonth=:bmonth, amount=:amt WHERE id=:id";
+  }else{
+    $sql = "INSERT INTO budgets (accountid, byear, bmonth, amount) VALUES (:aid, :byear, :bmonth, :amt)";
+  }
+
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(":aid", $accountid);
+  $stmt->bindValue(":byear", date("Y", $theDate));
+  $stmt->bindValue(":bmonth", date("m", $theDate));
+  $stmt->bindValue(":amt", $amount);
+  if($id > 0){$stmt->bindValue(":id", $id);}
+  $stmt->execute();
+  $rows = $stmt->rowCount();
+  $stmt->closeCursor();
+  return $rows; 
+}
+
+function budgetExists($accountid, $theDate){
+  $db = dbConnect();
+  $sql = "SELECT id FROM budgets WHERE accountid=:aid AND bmonth=:bmonth AND byear=:byear";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(":aid", $accountid);
+  $stmt->bindValue(":byear", date("Y", $theDate));
+  $stmt->bindValue(":bmonth", date("m", $theDate));
+  $stmt->execute();
+  $rows = $stmt->fetch(PDO::FETCH_ASSOC);
+  $stmt->closeCursor();
+  if ($rows){return $rows['id'];} else {return 0;}
+}
+
+function removeBudget($id){
+  $db = dbConnect();
+  $sql = "UPDATE budgets SET active=false WHERE id=:id";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+  $stmt->execute();
+  $rowsChanged = $stmt->rowCount();
+  $stmt->closeCursor();
+  return $rowsChanged;
+}
+
+function restoreBudget($id){
+  $db = dbConnect();
+  $sql = "UPDATE budgets SET active=true WHERE id=:id";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+  $stmt->execute();
+  $rowsChanged = $stmt->rowCount();
+  $stmt->closeCursor();
+  return $rowsChanged;
 }
 
 function getTransactions($fromDate, $toDate){
@@ -474,6 +552,30 @@ function getTransactions($fromDate, $toDate){
   $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
   $stmt->closeCursor();
   return $rows;
+}
+
+function getTransactionTotal($accountId, $theDate){
+  $db = dbConnect();
+  $sql = "SELECT * FROM transactionlogs WHERE accountid=:id AND tdate>:fdate AND tdate<:tdate";
+  $stmt = $db->prepare($sql);
+  $dateObj =  new DateTime(date("m/d/Y", $theDate));
+  $dateObj->modify("last day of last month");
+  $fromDate = $dateObj->format("m/d/Y H:i:s");
+  $dateObj->modify("first day of next month");
+  $dateObj->modify("first day of next month");
+  $toDate = $dateObj->format("m/d/Y H:i:s");
+  $stmt->bindValue(":fdate", $fromDate, PDO::PARAM_STR);
+  $stmt->bindValue(":tdate", $toDate, PDO::PARAM_STR);
+  $stmt->bindValue(":id", $accountId, PDO::PARAM_INT);
+  $stmt->execute();
+  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $stmt->closeCursor();
+  $sendTotal = 0;
+  foreach($rows as $row){
+    $sendTotal += $row['amount'];
+  }
+  
+  return $sendTotal;
 }
 
 function addTransaction($accountID, $amount, $notes){

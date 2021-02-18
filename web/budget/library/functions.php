@@ -41,7 +41,7 @@ function getUserTable($admin){
     }
     $tb .= "</div><div>";
     //add add/remove button here
-    var_dump($user['username'].' '.$admin['username']);
+    //var_dump($user['username'].' '.$admin['username']);
     if($user['username']==$admin['username']){
 
     }else{
@@ -379,9 +379,9 @@ function getAccountsTable(){
     if ($account['active']){$html .= "Remove";}else{$html .= "Restore";}
     $html .= "'>";
     $html .= "</form>";
-    if ($account['active']){
+    if ($account['active'] && false){
       $html .= "<form action='/budget/' method='post'>";
-      $html .= "<input type='hidden' name='id' value='$account[id]'>";
+      $html .= "<input type='hidden' name='accountid' value='$account[id]'>";
       $html .= "<input type='hidden' name='action' value='gotoAddBudget'>";
       $html .= "<input type='submit' value='Budget'>";
       $html .= "</form>";
@@ -407,7 +407,7 @@ function getAccountNumberByID($id){
 
 function getEditAccountsContent($accountID){
   $account = getAccount($accountID);
-  var_dump($accountID);
+  
   $html = "<h2>".getAccountNumber(getTheType($account['accounttypeid']), getFrequency($account['accountfrequencyid']), getCategory($account['accountcategoryid']), $account['subcategorycode'])."</h2>";
   $html .= "<form action='/budget/' method='POST'>";
   $html .= "<label for='accountName'>Name:</label>";
@@ -453,7 +453,7 @@ function getEditAccountsContent($accountID){
   $html .= "<label for='subcategorycode'>Sub Category Code</label>";
   $html .= "<input name='subcategorycode' type='number' value='$account[subcategorycode]'>";
   $html .= "<input type='hidden' name='action' value='saveAccount'>";
-  $html .= "<input type='hidden' name='id' value='$account[id]'>";
+  $html .= "<input type='hidden' name='id' value=$account[id]>";
   $html .= "<input type='submit' value='Save Account'>";
   $html .= "</form>";
   return $html;
@@ -474,6 +474,106 @@ function getTransactionsTable($fromDate=null, $toDate=null){
     $html .= "<div>".date("m/d/Y", $tDate)."</div><div>$accountName</div><div>$amount</div><div>";
     $html .= "$notes</div><div class='controls'>";
     $html .= "</div>";
+  }
+  $html .= "</div>";
+  return $html;
+}
+
+function getBudgetForm($accountID, $theDate){
+  if(isset($theDate)){
+    
+    $bmonth = idate("m", $theDate);
+    $byear = idate("Y", $theDate);
+  }
+  var_dump($bmonth);
+  var_dump($byear);
+  $account = getAccount($accountID);
+  $html = "<h2>".getAccountNumber(getTheType($account['accounttypeid']), getFrequency($account['accountfrequencyid']), getCategory($account['accountcategoryid']), $account['subcategorycode']);
+  $html .= "  $account[name]</h2>";
+  $html .= "<form action='/budget/' method='POST'>";
+  $html .= "<label for='bmonth'>Month</label>";
+  $html .= "<select name='bmonth' type='number'>";
+  for($i=1; $i<=12; $i++){
+    $dateObj = DateTime::createFromFormat('!m', $i);
+    $monthName = $dateObj->format('F');
+    $html .= "<option value=$i";
+    if($bmonth===$i){$html .= " selected ";}
+    $html .= ">$monthName</option>";
+  }
+  $html .= "</select>";
+  $dateObj = date("Y");
+  $html .= "<label for='byear'>Year</label>";
+  $html .= "<select name='byear' type='number'>";
+  for($i=1; $i<=5; $i++){
+    $html .= "<option value=$dateObj";
+    if($byear===$i){$html .= " selected ";}
+    $html .= ">$dateObj</option>";
+    $dateObj++;
+  }
+  $html .= "</select>";
+  $html .= "<label for='amount'>Amount</label>";
+  $html .= "<input name='amount' type='number' step='0.01'>";
+  $html .= "<input type='hidden' name='id' value=$account[id]>";
+  $html .= "<input type='hidden' name='action' value='addBudget' >";
+  $html .= "<input type='submit' value='Add Budget'>";
+  $html .= "</form>";
+  return $html;
+}
+
+function getBudgetTable($expand = '0000'){
+  if(!isset($_SESSION['bmonth'])){$_SESSION['bmonth']=12;}
+  if($_SESSION['bmonth'] ==0){
+    $theDate = strtotime("today");  
+  }
+  $theDate = strtotime("+$_SESSION[bmonth] Months");
+  
+  $dateObj = date("M Y", $theDate);
+  $html = "<h2>$dateObj</h2>";
+  $budgets = getBudgets($theDate);
+  $accounts = getAccounts($_SESSION['userData']['id'], True);
+  if (count($accounts) <> count($budgets)){
+    foreach($accounts as $account){
+      $result = getBudgetByAccount($account['id']);
+      if(!$result){addBudget($account['id'], $theDate, 0);}
+    }
+  }
+  
+  $budgets = getBudgets($theDate);
+  $tDate = $theDate;
+  $html .= "<div class='table col_4'>";
+  $html .= "<div>Account</div><div class='center'>Budget</div><div class='center'>Actual</div>";
+  $html .= "<div class='center'>Balance</div><div></div>";
+  $bValue = 0;
+  $aValue = 0;
+  foreach($budgets as $budget){
+    $anum = getAccountNumberByID($budget['accountid']);
+    $bValue += $budget['amount'];
+    $aValue += getTransactionTotal($budget['accountid'], $theDate);
+        
+    if ($budget['subcategorycode'] ==0 || substr($anum, 0, 4) === $expand){
+      $balance = $bValue - $aValue;
+      $html .= "<div >";
+      if(substr($anum, 0, 4) === $expand){
+        if ($budget['subcategorycode']==0){
+          $html .= "<a href='/budget/?action=collapsebudget&id=".substr($anum,0,4)."' title='expand account'>&UpTeeArrow;</a>&ensp;  ";
+        } else {$html .= "&emsp;&emsp;";}
+      }else{
+        $html .= "<a href='/budget/?action=expandbudget&id=".substr($anum,0,4)."' title='expand account'>&RightTeeArrow;</a>&ensp;";
+      }
+      $html .= "$anum $budget[name]</div><div class='center'>$bValue</div>";
+      $html .= "<div class='center'>$aValue</div><div class='center'>$balance</div>";
+      $html .= "<div class='controls'>";
+      $html .= "<form action='/budget/' method='post'>";
+      $html .= "<input type='hidden' name='accountid' value='$budget[accountid]'>";
+      $html .= "<input type='hidden' name='action' value='gotoAddBudget'>";
+      
+  
+      $html .= "<input type='hidden' name='date' value='$theDate'>";
+      $html .= "<input type='submit' value='Budget'>";
+      $html .= "</form>";
+      $html .= "</div>";
+      $bValue = 0; $aValue = 0;
+    }
   }
   $html .= "</div>";
   return $html;

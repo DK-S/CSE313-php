@@ -290,6 +290,33 @@
       $tabs = getTabs('budget', 'budget');
       $callPage = "./views/admin.php";
       $navSelect='dashboard';
+      $searchFields = "Date picker here. Maybe arrows to advance";
+      if(!isset($_Session['bmonth'])){$_SESSION['bmonth']=0;}
+      $articleContent = getBudgetTable();
+      $addSection = getAddSection('addTransaction');
+      
+      break;
+    case 'expandbudget':
+      $tabs = getTabs('budget', 'budget');
+      $callPage = "./views/admin.php";
+      $navSelect='dashboard';
+      $searchFields = "Date picker here. Maybe arrows to advance";
+      if(!isset($_Session['bmonth'])){$_SESSION['bmonth']=0;}
+      $expand = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_STRING);
+      //var_dump($expand);
+      $articleContent = getBudgetTable($expand);
+      $addSection = getAddSection('addTransaction');
+    
+      break;
+    case 'collapsebudget':
+      $tabs = getTabs('budget', 'budget');
+      $callPage = "./views/admin.php";
+      $navSelect='dashboard';
+      $searchFields = "Date picker here. Maybe arrows to advance";
+      if(!isset($_Session['bmonth'])){$_SESSION['bmonth']=0;}
+      $articleContent = getBudgetTable();
+      $addSection = getAddSection('addTransaction');
+      
       break;
     case 'gotoAccounts':
       $tabs = getTabs('budget', 'accounts');
@@ -406,16 +433,18 @@
       $addSection = getAddSection('addTransaction');
       break;
     case 'addTransaction':
+      $_SESSION['message']='';
       $tabs = getTabs('budget', 'transactions');
       $callPage = "./views/admin.php";
       $navSelect='dashboard';
-      $accountID = filter_input(INPUT_POST, 'accountid', FILTER_SANITIZE_NUMBER_INT);
+      $accountid = filter_input(INPUT_POST, 'accountid', FILTER_SANITIZE_NUMBER_INT);
       $amount = filter_input(INPUT_POST, 'amount', FILTER_SANITIZE_NUMBER_FLOAT);
       $notes = filter_input(INPUT_POST, 'notes', FILTER_SANITIZE_STRING);
       if(!isset($amount)){$amount=0;}
       if(!isset($accountid)){$accountid=0;}
       if($accountid>0 && $amount>0){       
-        $rows = addTransaction($accountID, $amount, $notes);
+        $rows = addTransaction($accountid, $amount, $notes);
+        
       }else{$_SESSION['message']='You need to specify an account and an amount.';}
       
       $searchFields = getSearch("transactions", null, null);
@@ -424,7 +453,28 @@
       
       break;
     case 'gotoAddBudget':
-      
+      $tabs = getTabs('budget', 'budget');
+      $callPage = "./views/admin.php";
+      $navSelect='dashboard';
+      $searchFields = "";
+      $accountID = filter_input(INPUT_POST, 'accountid', FILTER_SANITIZE_NUMBER_INT);
+      $theDate = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_NUMBER_INT);
+      $articleContent = getBudgetForm($accountID, $theDate);
+      $addSection = "";
+      break;
+    case 'addBudget':
+      $tabs = getTabs('budget', 'budget');
+      $callPage = "./views/admin.php";
+      $navSelect='dashboard';
+      $byear = filter_input(INPUT_POST, 'byear', FILTER_SANITIZE_NUMBER_INT);
+      $bmonth = filter_input(INPUT_POST, 'bmonth', FILTER_SANITIZE_NUMBER_INT);
+      $amount = filter_input(INPUT_POST, 'amount', FILTER_SANITIZE_NUMBER_FLOAT);
+      $accountID = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+      $theDate = mktime(0,0,0,$bmonth,1,$byear);
+      $rows = addBudget($accountID, $theDate, $amount);
+      $searchFields = "";
+      $articleContent = getBudgetTable($expand);
+      $addSection = getAddSection('addTransaction');
       break;
     default:
       $navSelect = '';
