@@ -82,7 +82,9 @@
         $callPage = "./views/admin.php";
         $navSelect='dashboard';
         $searchFields = '';
-        $articleContent = '<p>This is for all the goodies (graphs and links).</p>';
+        if(!isset($_Session['bmonth'])){$_SESSION['bmonth']=0;}
+        $articleContent = getBudgetTable();
+        $addSection = getAddSection('addTransaction');
         $header = getHeader($userData);
         $tabs = getTabs('budget', 'budget');
       }
@@ -318,7 +320,7 @@
       $tabs = getTabs('budget', 'budget');
       $callPage = "./views/admin.php";
       $navSelect='dashboard';
-      $searchFields = "Date picker here. Maybe arrows to advance";
+      $searchFields = "";
       if(!isset($_Session['bmonth'])){$_SESSION['bmonth']=0;}
       if(!isset($_Session['expand'])){$_SESSION['expand']='';}
       $expand = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_STRING);
