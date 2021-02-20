@@ -2,7 +2,12 @@
   session_start();
 //var_dump($_SESSION);
   $_SESSION['message']='';
-  if (!isset($_SESSION['loggedin'])){$_SESSION['loggedin'] = false;}
+  
+  //echo !isset($_SESSION['bmonth']);
+  if(!isset($_SESSION['loggedin'])){$_SESSION['loggedin'] = false;}
+  if(isset($_SESSION['bmonth'])){$bmonth=$_SESSION['bmonth'];}else{$bmonth=0;}
+  if(isset($_SESSION['expand'])){$expand=$_SESSION['expand'];}else{$expand='0000';}
+  //var_dump($_SESSION['bmonth']);
   require_once './library/connections.php';
   require_once './library/functions.php';
   require_once './models/budget.php';
@@ -82,7 +87,6 @@
         $callPage = "./views/admin.php";
         $navSelect='dashboard';
         $searchFields = '';
-        if(!isset($_Session['bmonth'])){$_SESSION['bmonth']=0;}
         $articleContent = getBudgetTable();
         $addSection = getAddSection('addTransaction');
         $header = getHeader($userData);
@@ -311,8 +315,7 @@
       $callPage = "./views/admin.php";
       $navSelect='dashboard';
       $searchFields = "";
-      if(!isset($_Session['bmonth'])){$_SESSION['bmonth']=0;}
-      $articleContent = getBudgetTable();
+      $articleContent = getBudgetTable($expand);
       $addSection = getAddSection('addTransaction');
       
       break;
@@ -321,8 +324,7 @@
       $callPage = "./views/admin.php";
       $navSelect='dashboard';
       $searchFields = "";
-      if(!isset($_Session['bmonth'])){$_SESSION['bmonth']=0;}
-      if(!isset($_Session['expand'])){$_SESSION['expand']='';}
+      
       $expand = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_STRING);
       $_SESSION['expand']=$expand;
       //var_dump($expand);
@@ -331,12 +333,15 @@
     
       break;
     case 'collapsebudget':
+      $_SESSION['expand'] = '0000';
+      $expand = '0000';
+      //var_dump($_SESSION);
       $tabs = getTabs('budget', 'budget');
       $callPage = "./views/admin.php";
       $navSelect='dashboard';
-      $searchFields = "Date picker here. Maybe arrows to advance";
-      if(!isset($_Session['bmonth'])){$_SESSION['bmonth']=0;}
-      $articleContent = getBudgetTable();
+      $searchFields = "";
+      $articleContent = getBudgetTable($expand);
+      
       $addSection = getAddSection('addTransaction');
       
       break;
@@ -369,7 +374,7 @@
 
       $rows = addAccount($accountName, $description, $_SESSION['userData']['id'], $accounttypeid, $accountfrequencyid, $accountcategoryid, $accountsubcategoryid, $subcategorycode);
       if($rows > 0){
-        $_Session['message']="Failed to add the data. Please verify and try again";
+        $_SESSION['message']="Failed to add the data. Please verify and try again";
         $articleContent = getAccountsTable($_SESSION['userData']['id']);
         $addSection = getAddSection('addAccounts');  
       }else{
@@ -495,8 +500,7 @@
       $theDate = mktime(0,0,0,$bmonth,1,$byear);
       $rows = addBudget($accountID, $theDate, $amount);
       $searchFields = "";
-      if(!isset($_Session['expand'])){$_SESSION['expand']='';}
-      $expand = $_SESSION['expand'];
+      //$expand = $_SESSION['expand'];
       $articleContent = getBudgetTable($expand);
       $addSection = getAddSection('addTransaction');
       break;
@@ -506,8 +510,7 @@
       $navSelect='dashboard';
       $_SESSION['bmonth']--;
       $searchFields = "";
-      if(!isset($_Session['expand'])){$_SESSION['expand']='';}
-      $expand = $_SESSION['expand'];
+      // = $_SESSION['expand'];
       $articleContent = getBudgetTable($expand);
       $addSection = getAddSection('addTransaction');
       
@@ -518,8 +521,7 @@
       $navSelect='dashboard';
       $_SESSION['bmonth']++;
       $searchFields = "";
-      if(!isset($_Session['expand'])){$_SESSION['expand']='';}
-      $expand = $_SESSION['expand'];
+      //$expand = $_SESSION['expand'];
       $articleContent = getBudgetTable($expand);
       $addSection = getAddSection('addTransaction');
       
@@ -550,6 +552,7 @@
       $callPage = "./views/admin.php";
       break;
   }
+  //var_dump($_SESSION);
   $navList = getNavlist($navSelect);
   include $callPage;
 ?>

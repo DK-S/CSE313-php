@@ -540,8 +540,11 @@ function getBudgetForm($accountID, $theDate){
     $dateObj++;
   }
   $html .= "</select>";
+  $budget = getBudgetByAccount($account['id'], $theDate);
   $html .= "<label for='amount'>Amount</label>";
-  $html .= "<input name='amount' type='number' step='0.01'>";
+  $html .= "<input name='amount' type='number' step='0.01'";
+  if($budget){$html .= " value=$budget[amount]";}
+  $html .= ">";
   $html .= "<input type='hidden' name='id' value=$account[id]>";
   $html .= "<input type='hidden' name='action' value='addBudget' >";
   $html .= "<input type='submit' value='Add Budget'>";
@@ -550,7 +553,8 @@ function getBudgetForm($accountID, $theDate){
 }
 
 function getBudgetTable($expand = '0000'){
-  if(!isset($_SESSION['bmonth'])){$_SESSION['bmonth']=12;}
+  //if(!isset($_SESSION['bmonth'])){$_SESSION['bmonth']=12;}
+  //var_dump($_SESSION['bmonth']);
   if($_SESSION['bmonth'] ==0){
     $theDate = strtotime("today");  
   }
