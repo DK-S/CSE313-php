@@ -37,7 +37,7 @@
       $callPage = 'views/login.php';
       break;
     case 'logout':
-      echo "help";
+      //echo "help";
       session_destroy();
       header('Location: /budget/');
             

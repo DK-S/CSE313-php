@@ -54,7 +54,7 @@ Create table accountsubcategories (id serial not null primary key
 );
 
 Create table accounts (id serial not null primary key
-,name varchar(20)
+,name varchar(50)
 ,description TEXT
 ,userid int references users(id)
 ,active boolean

@@ -514,8 +514,8 @@ function getBudgetForm($accountID, $theDate){
     $bmonth = idate("m", $theDate);
     $byear = idate("Y", $theDate);
   }
-  var_dump($bmonth);
-  var_dump($byear);
+  //var_dump($bmonth);
+  //var_dump($byear);
   $account = getAccount($accountID);
   $html = "<h2>".getAccountNumber(getTheType($account['accounttypeid']), getFrequency($account['accountfrequencyid']), getCategory($account['accountcategoryid']), $account['subcategorycode']);
   $html .= "  $account[name]</h2>";
