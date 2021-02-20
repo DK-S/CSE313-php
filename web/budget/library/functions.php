@@ -553,7 +553,7 @@ function getBudgetForm($accountID, $theDate){
 }
 
 function getBudgetTable($expand = '0000'){
-  //if(!isset($_SESSION['bmonth'])){$_SESSION['bmonth']=12;}
+  if(!isset($_SESSION['bmonth'])){$_SESSION['bmonth']=12;}
   //var_dump($_SESSION['bmonth']);
   if($_SESSION['bmonth'] ==0){
     $theDate = strtotime("today");  

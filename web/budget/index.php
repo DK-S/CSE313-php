@@ -24,7 +24,9 @@
   $articleContent = '';
   if(isset($_SESSION['userData'])){$header = getHeader($_SESSION['userData']);}else{$header = getHeader();}
   $tabs = '';
+  if(!$action){$action='gotoBudget';}
   //check to see if user is logged in. If not then redirect the action to login
+
   if($action=='newuser' || $action=='saveuser' ||  $action=='submitlogin'){
   }else{
     if(isset($_SESSION['loggedin'])){
@@ -98,6 +100,9 @@
       $callPage = "./views/admin.php";
       $navSelect='dashboard';
       $tabs = getTabs('budget', 'budget');
+      $searchFields = "";
+      $articleContent = getBudgetTable($expand);
+      $addSection = getAddSection('addTransaction');
       break;
     case 'admin':
       $tabs = getTabs('admin', 'types');
