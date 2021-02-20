@@ -33,7 +33,27 @@ function getUserDataByID($userid){
   return $rows;
 }
 
+function removeUser($id){
+  $db = dbConnect();
+  $sql = "UPDATE users SET active=false WHERE id=:id";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+  $stmt->execute();
+  $rowsChanged = $stmt->rowCount();
+  $stmt->closeCursor();
+  return $rowsChanged;
+}
 
+function restoreUser($id){
+  $db = dbConnect();
+  $sql = "UPDATE users SET active=true WHERE id=:id";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+  $stmt->execute();
+  $rowsChanged = $stmt->rowCount();
+  $stmt->closeCursor();
+  return $rowsChanged;
+}
 
 function getTypes($search='', $status=''){
   $db = dbConnect();
@@ -265,6 +285,28 @@ function addSubCategory($newName){
 
 }
 
+function removeSubCategory($id){
+  $db = dbConnect();
+  $sql = "UPDATE accountsubcategories SET active=false WHERE id=:id";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+  $stmt->execute();
+  $rowsChanged = $stmt->rowCount();
+  $stmt->closeCursor();
+  return $rowsChanged;
+}
+
+function restoreSubCategory($id){
+  $db = dbConnect();
+  $sql = "UPDATE accountsubcategories SET active=true WHERE id=:id";
+  $stmt = $db->prepare($sql);
+  $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+  $stmt->execute();
+  $rowsChanged = $stmt->rowCount();
+  $stmt->closeCursor();
+  return $rowsChanged;
+}
+
 function getAccounts($userid, $onlyActive=FALSE){
   $db = dbConnect();
   $sql = "SELECT * FROM accounts WHERE userid=:id";
@@ -454,23 +496,26 @@ function restoreCategory($id){
 function getBudgets($theDate){
   $db = dbConnect();
   $sql = "SELECT *, b.id as bid, b.accountid as b_aid, a.id as aid FROM budgets as b inner join accounts as a on a.id = b.accountid";
-  $sql .= " WHERE b.byear=:byear AND b.bmonth=:bmonth";
+  $sql .= " WHERE b.byear=:byear AND b.bmonth=:bmonth AND a.userid=:uid";
   $sql .= " ORDER BY a.accounttypeid ASC, a.accountfrequencyid ASC, a.accountcategoryid ASC, a.subcategorycode DESC";
   $stmt = $db->prepare($sql);
   $stmt->bindValue(":byear", date("Y", $theDate));
   $stmt->bindValue(":bmonth", date("m", $theDate));
+  $stmt->bindValue(":uid", $_SESSION['userData']['id']);
   $stmt->execute();
   $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
   $stmt->closeCursor();
   return $rows;
 }
 
-function getBudgetByAccount($accountid){
+function getBudgetByAccount($accountid, $theDate){
   $db = dbConnect();
   $sql = "SELECT * FROM budgets";
-  $sql .= " WHERE accountid=:aid";
+  $sql .= " WHERE accountid=:aid AND bmonth=:bmonth AND byear=:byear";
   $stmt = $db->prepare($sql);
   $stmt->bindValue(":aid", $accountid);
+  $stmt->bindValue(":byear", date("Y", $theDate));
+  $stmt->bindValue(":bmonth", date("m", $theDate));
   $stmt->execute();
   $rows = $stmt->fetch(PDO::FETCH_ASSOC);
   $stmt->closeCursor();

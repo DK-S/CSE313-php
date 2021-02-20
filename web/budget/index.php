@@ -11,7 +11,7 @@
   if ($action == NULL){
     $action = filter_input(INPUT_GET, 'action');
   }
-  //var_dump($action);
+  var_dump($action);
   //defaults for page content
   $callPage = "./views/500.php";
   $navSelect='';
@@ -146,6 +146,24 @@
       }
       
 
+      break;
+    case 'removeuser':
+      $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+      removeUser($id);
+      $tabs = getTabs('admin', 'users');
+      $callPage = './views/admin.php';
+      $articleContent = getUserTable($_SESSION['userData']);
+      $searchFields = '';
+      $navSelect='admin';
+      break;
+    case 'restoreuser':
+      $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+      restoreUser($id);
+      $tabs = getTabs('admin', 'users');
+      $callPage = './views/admin.php';
+      $articleContent = getUserTable($_SESSION['userData']);
+      $searchFields = '';
+      $navSelect='admin';
       break;
     case 'managetypes':
       $tabs = getTabs('admin', 'types');
@@ -290,7 +308,7 @@
       $tabs = getTabs('budget', 'budget');
       $callPage = "./views/admin.php";
       $navSelect='dashboard';
-      $searchFields = "Date picker here. Maybe arrows to advance";
+      $searchFields = "";
       if(!isset($_Session['bmonth'])){$_SESSION['bmonth']=0;}
       $articleContent = getBudgetTable();
       $addSection = getAddSection('addTransaction');
@@ -302,7 +320,9 @@
       $navSelect='dashboard';
       $searchFields = "Date picker here. Maybe arrows to advance";
       if(!isset($_Session['bmonth'])){$_SESSION['bmonth']=0;}
+      if(!isset($_Session['expand'])){$_SESSION['expand']='';}
       $expand = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_STRING);
+      $_SESSION['expand']=$expand;
       //var_dump($expand);
       $articleContent = getBudgetTable($expand);
       $addSection = getAddSection('addTransaction');
@@ -428,7 +448,7 @@
       $tabs = getTabs('budget', 'transactions');
       $callPage = "./views/admin.php";
       $navSelect='dashboard';
-      $searchFields = getSearch("transactions", null, null);
+      $searchFields = "";//getSearch("transactions", null, null);
       $articleContent = getTransactionsTable();
       $addSection = getAddSection('addTransaction');
       break;
@@ -473,8 +493,54 @@
       $theDate = mktime(0,0,0,$bmonth,1,$byear);
       $rows = addBudget($accountID, $theDate, $amount);
       $searchFields = "";
+      if(!isset($_Session['expand'])){$_SESSION['expand']='';}
+      $expand = $_SESSION['expand'];
       $articleContent = getBudgetTable($expand);
       $addSection = getAddSection('addTransaction');
+      break;
+    case 'decMonth':
+      $tabs = getTabs('budget', 'budget');
+      $callPage = "./views/admin.php";
+      $navSelect='dashboard';
+      $_SESSION['bmonth']--;
+      $searchFields = "";
+      if(!isset($_Session['expand'])){$_SESSION['expand']='';}
+      $expand = $_SESSION['expand'];
+      $articleContent = getBudgetTable($expand);
+      $addSection = getAddSection('addTransaction');
+      
+      break;
+    case 'incMonth':
+      $tabs = getTabs('budget', 'budget');
+      $callPage = "./views/admin.php";
+      $navSelect='dashboard';
+      $_SESSION['bmonth']++;
+      $searchFields = "";
+      if(!isset($_Session['expand'])){$_SESSION['expand']='';}
+      $expand = $_SESSION['expand'];
+      $articleContent = getBudgetTable($expand);
+      $addSection = getAddSection('addTransaction');
+      
+      break;
+    case 'removesub':
+      $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+      removeSubCategory($id);
+      $tabs = getTabs('budget', 'categories');
+      $callPage = "./views/admin.php";
+      $navSelect='dashboard';
+      $searchFields = getSearch("subCategories", null, null);
+      $articleContent = getSubCategoryTable();
+      $addSection = getAddSection('subCategories');
+      break;
+    case 'restoresub':
+      $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+      restoreSubCategory($id);
+      $tabs = getTabs('budget', 'categories');
+      $callPage = "./views/admin.php";
+      $navSelect='dashboard';
+      $searchFields = getSearch("subCategories", null, null);
+      $articleContent = getSubCategoryTable();
+      $addSection = getAddSection('subCategories');
       break;
     default:
       $navSelect = '';

@@ -32,7 +32,6 @@ nav.tabs ul li.selected {background-color: blue; transform:scale(1); color:blue;
 nav.tabs ul li.selected a{color:white;}
 
 
-
 footer{
   margin-top: 10px;
   border-top:solid 4px;
@@ -118,6 +117,14 @@ div.table>div.center{text-align: center;}
 .admin form label{grid-column: 2/3;}
 .admin form input{grid-column: 3/4;}
 .admin form input:last-of-type{grid-column: 2/4;}
+
+div.scroll{display: grid; grid-template-columns: 30px auto 30px; padding-bottom: 15px;}
+div.scroll form{display: block;}
+div.scroll input{height: 30px;}
+div.scroll input:first-of-type{grid-column: 1/2;}
+div.scroll input:last-of-type{grid-column: -2/-1;}
+div.scroll h2{grid-column: 2/3; text-align: center; margin: 0;}
+
 
 .controls form{display:inline;}
 

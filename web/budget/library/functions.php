@@ -106,6 +106,28 @@ function getSearch($table, $search='', $status=''){
   return $html;
 }
 
+function getBudgetDateScroll($theDate){
+  $html = "<div class='scroll'>";
+  $html .= "<div>";
+  $html .= "<form action='/budget/' method='post'>";
+  $html .= "<input type='hidden' name='action' value='decMonth'>";
+  $html .= "<input type='submit' value='&lang;'>";
+  $html .= "</form>";
+  $html .= "</div>";
+  $html .= "<div>";
+  $dateObj = date("M Y", $theDate);
+  $html .= "<h2>$dateObj</h2>";
+  $html .= "</div>";
+  $html .= "<div>";
+  $html .= "<form action='/budget/' method='post'>";
+  $html .= "<input type='hidden' name='action' value='incMonth'>";
+  $html .= "<input type='submit' value='&rang;'>";
+  $html .= "</form>";
+  $html .= "</div>";
+  $html .= "</div>";
+  return $html;
+}
+
 function getAddSection($page){
   switch($page){
     case 'subCategories':
@@ -345,8 +367,15 @@ function getSubCategoryTable($search='', $status=''){
     if ($type["active"]){
       $tb .= "<img src='/budget/images/greencheck.jpg' alt='Green Checkmark'>";
     }
-    //add checkbox here
-    $tb .= "</div><div>";
+    $tb .= "</div>";
+    $tb .= "<div>";
+    if($_SESSION['userData']['administrator']){
+      if ($type["active"]){
+        $tb .= "<a href='/budget/?action=removesub&id=$type[id]' title='Link to remove sub'>Remove</a>";
+      } else {
+        $tb .= "<a href='/budget/?action=restoresub&id=$type[id]' title='Link to restore sub'>Restore</a>";
+      }
+    }
     $tb .= "</div>";
   }
   $tb .= "</div>";
@@ -529,17 +558,17 @@ function getBudgetTable($expand = '0000'){
   
   $dateObj = date("M Y", $theDate);
   $html = "<h2>$dateObj</h2>";
+  $html = getBudgetDateScroll($theDate);
   $budgets = getBudgets($theDate);
   $accounts = getAccounts($_SESSION['userData']['id'], True);
   if (count($accounts) <> count($budgets)){
     foreach($accounts as $account){
-      $result = getBudgetByAccount($account['id']);
+      $result = getBudgetByAccount($account['id'], $theDate);
       if(!$result){addBudget($account['id'], $theDate, 0);}
     }
   }
   
   $budgets = getBudgets($theDate);
-  $tDate = $theDate;
   $html .= "<div class='table col_4'>";
   $html .= "<div>Account</div><div class='center'>Budget</div><div class='center'>Actual</div>";
   $html .= "<div class='center'>Balance</div><div></div>";
