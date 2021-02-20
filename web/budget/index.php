@@ -11,7 +11,7 @@
   if ($action == NULL){
     $action = filter_input(INPUT_GET, 'action');
   }
-  var_dump($action);
+  //var_dump($action);
   //defaults for page content
   $callPage = "./views/500.php";
   $navSelect='';
